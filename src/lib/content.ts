@@ -101,6 +101,17 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "relieve-montana",
+    image: workRelief,
+    featured: true,
+    title: { es: "Modelo de relieve montañoso", en: "Mountain Relief Model" },
+    category: { es: "Cartografía · DEM", en: "Cartography · DEM" },
+    description: {
+      es: "Sombreado y curvas de nivel a partir de un modelo digital de elevación.",
+      en: "Hillshade and contours derived from a digital elevation model.",
+    },
+  },
+  {
     slug: "cuenca-hidrografica",
     image: workWatershed,
     featured: true,
@@ -120,16 +131,6 @@ export const projects: Project[] = [
     description: {
       es: "Mapa de usos del suelo derivado de imágenes satelitales multitemporales.",
       en: "Land-use map derived from multi-temporal satellite imagery.",
-    },
-  },
-  {
-    slug: "relieve-montana",
-    image: workRelief,
-    title: { es: "Modelo de relieve montañoso", en: "Mountain Relief Model" },
-    category: { es: "Cartografía · DEM", en: "Cartography · DEM" },
-    description: {
-      es: "Sombreado y curvas de nivel a partir de un modelo digital de elevación.",
-      en: "Hillshade and contours derived from a digital elevation model.",
     },
   },
 ];
