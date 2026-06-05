@@ -55,6 +55,17 @@ export const translations = {
     en: "Sample catalog — contact me to acquire layers or request custom datasets.",
   },
 
+  "gallery.title": { es: "Galería", en: "Gallery" },
+  "gallery.intro": {
+    es: "Mapas y láminas naturalistas disponibles como productos. Explora y consíguelos en la tienda.",
+    en: "Maps and naturalist prints available as products. Browse and get them in the store.",
+  },
+  "gallery.filter.all": { es: "Todo", en: "All" },
+  "gallery.filter.maps": { es: "Mapas", en: "Maps" },
+  "gallery.filter.svg": { es: "SVG", en: "SVG" },
+  "gallery.buy": { es: "Comprar en la tienda", en: "Buy in the store" },
+
+
   "contact.title": { es: "Hablemos", en: "Get in touch" },
   "contact.name": { es: "Nombre", en: "Name" },
   "contact.email": { es: "Correo electrónico", en: "Email" },
