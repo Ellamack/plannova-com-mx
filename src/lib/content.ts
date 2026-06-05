@@ -137,33 +137,69 @@ export const projects: Project[] = [
   },
 ];
 
+export type GalleryKind = "mapa" | "svg";
+
 export interface Illustration {
   slug: string;
   image: string;
+  kind: GalleryKind;
   title: Localized;
   source: Localized;
+  /** Link to the store where this product is sold. */
+  storeUrl?: string;
 }
 
 export const illustrations: Illustration[] = [
   {
     slug: "escarabajo",
     image: galleryBeetle,
+    kind: "svg",
     title: { es: "Escarabajo", en: "Beetle" },
     source: { es: "Lámina entomológica, s. XIX", en: "Entomology plate, 19th c." },
+    storeUrl: "#",
   },
   {
     slug: "planta-floral",
     image: galleryBotanical,
+    kind: "svg",
     title: { es: "Planta en flor", en: "Flowering Plant" },
     source: { es: "Lámina botánica, s. XIX", en: "Botanical plate, 19th c." },
+    storeUrl: "#",
   },
   {
     slug: "mariposa",
     image: galleryButterfly,
+    kind: "svg",
     title: { es: "Mariposa", en: "Butterfly" },
     source: { es: "Lámina entomológica, s. XIX", en: "Entomology plate, 19th c." },
+    storeUrl: "#",
+  },
+  {
+    slug: "mapa-relieve",
+    image: workRelief,
+    kind: "mapa",
+    title: { es: "Lámina de relieve montañoso", en: "Mountain Relief Print" },
+    source: { es: "Mapa decorativo · DEM", en: "Decorative map · DEM" },
+    storeUrl: "#",
+  },
+  {
+    slug: "mapa-cuenca",
+    image: workWatershed,
+    kind: "mapa",
+    title: { es: "Atlas de cuenca", en: "Watershed Atlas Print" },
+    source: { es: "Mapa decorativo · Hidrología", en: "Decorative map · Hydrology" },
+    storeUrl: "#",
+  },
+  {
+    slug: "mapa-coberturas",
+    image: workLandcover,
+    kind: "mapa",
+    title: { es: "Coberturas del suelo", en: "Land Cover Print" },
+    source: { es: "Mapa decorativo · Teledetección", en: "Decorative map · Remote Sensing" },
+    storeUrl: "#",
   },
 ];
+
 
 export interface LayerItem {
   slug: string;
