@@ -81,8 +81,8 @@ export const services: Service[] = [
     icon: "Leaf",
     title: { es: "Consultoría Ambiental", en: "Environmental Consulting" },
     summary: {
-      es: "Trámites y estudios ambientales especializados ante ASEA, SEMARNAT y SEDEMA CDMX.",
-      en: "Specialized environmental permits and studies before ASEA, SEMARNAT, and SEDEMA CDMX.",
+      es: "Profesionales competentes gestionan tu proyecto aquí. Trámites y estudios ambientales especializados ante ASEA, SEMARNAT y SEDEMA CDMX.",
+      en: "Competent professionals manage your project here. Specialized environmental permits and studies before ASEA, SEMARNAT, and SEDEMA CDMX.",
     },
     points: [
       { es: "Manifestación de Impacto Ambiental (ASEA · SEMARNAT)", en: "Environmental Impact Statement (ASEA · SEMARNAT)" },
