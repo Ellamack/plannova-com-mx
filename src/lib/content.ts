@@ -33,6 +33,20 @@ export interface Service {
 
 export const services: Service[] = [
   {
+    slug: "cartografia",
+    icon: "Map",
+    title: { es: "Cartografía a Medida", en: "Custom Cartography" },
+    summary: {
+      es: "Mapas claros y hermosos que comunican datos complejos con elegancia.",
+      en: "Clear, beautiful maps that communicate complex data with elegance.",
+    },
+    points: [
+      { es: "Mapas temáticos e impresos", en: "Thematic and print maps" },
+      { es: "Diseño cartográfico fino", en: "Fine cartographic design" },
+      { es: "Visualización de datos", en: "Data visualization" },
+    ],
+  },
+  {
     slug: "gis",
     icon: "Layers",
     title: { es: "Sistemas de Información Geográfica", en: "Geographic Information Systems" },
@@ -72,20 +86,6 @@ export const services: Service[] = [
       { es: "Líneas base ambientales", en: "Environmental baselines" },
       { es: "Cartografía de riesgos", en: "Risk mapping" },
       { es: "Apoyo a estudios de impacto", en: "Impact study support" },
-    ],
-  },
-  {
-    slug: "cartografia",
-    icon: "Map",
-    title: { es: "Cartografía a Medida", en: "Custom Cartography" },
-    summary: {
-      es: "Mapas claros y hermosos que comunican datos complejos con elegancia.",
-      en: "Clear, beautiful maps that communicate complex data with elegance.",
-    },
-    points: [
-      { es: "Mapas temáticos e impresos", en: "Thematic and print maps" },
-      { es: "Diseño cartográfico fino", en: "Fine cartographic design" },
-      { es: "Visualización de datos", en: "Data visualization" },
     ],
   },
 ];
