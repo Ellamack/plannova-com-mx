@@ -109,8 +109,8 @@ export const projects: Project[] = [
     title: { es: "Modelo de relieve montañoso", en: "Mountain Relief Model" },
     category: { es: "Cartografía · DEM", en: "Cartography · DEM" },
     description: {
-      es: "Sombreado y curvas de nivel a partir de un modelo digital de elevación.",
-      en: "Hillshade and contours derived from a digital elevation model.",
+      es: "Sube tu shapefile o KML de cualquier parte del mundo y obtén tu recorte DEM con curvas de nivel. Para México, resolución mejorada con datos nacionales. Para el resto del mundo, cobertura global vía SRTM / Copernicus 30 m.",
+      en: "Upload your shapefile or KML from anywhere in the world and get your DEM clip with contour lines. For Mexico, enhanced resolution with national data. For the rest of the world, global coverage via SRTM / Copernicus 30 m.",
     },
   },
   {
