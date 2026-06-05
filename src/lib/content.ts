@@ -35,15 +35,17 @@ export const services: Service[] = [
   {
     slug: "cartografia",
     icon: "Map",
-    title: { es: "Cartografía a Medida", en: "Custom Cartography" },
+    title: { es: "Cartografía temática", en: "Thematic Cartography" },
     summary: {
-      es: "Mapas claros y hermosos que comunican datos complejos con elegancia.",
-      en: "Clear, beautiful maps that communicate complex data with elegance.",
+      es: "Mapas temáticos especializados: medio físico, socioeconómico, hidrología, división política, infraestructura y más.",
+      en: "Specialized thematic maps: physical environment, socioeconomic, hydrology, political boundaries, infrastructure, and more.",
     },
     points: [
-      { es: "Mapas temáticos e impresos", en: "Thematic and print maps" },
-      { es: "Diseño cartográfico fino", en: "Fine cartographic design" },
-      { es: "Visualización de datos", en: "Data visualization" },
+      { es: "Medio físico y relieve", en: "Physical environment and relief" },
+      { es: "Socioeconómico y demográfico", en: "Socioeconomic and demographic" },
+      { es: "Hidrología y drenaje", en: "Hydrology and drainage" },
+      { es: "División política y administrativa", en: "Political and administrative boundaries" },
+      { es: "Infraestructura y transporte", en: "Infrastructure and transport" },
     ],
   },
   {
