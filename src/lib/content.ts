@@ -79,13 +79,13 @@ export const services: Service[] = [
     icon: "Leaf",
     title: { es: "Consultoría Ambiental", en: "Environmental Consulting" },
     summary: {
-      es: "Apoyo técnico riguroso para estudios, líneas base y evaluación de impacto.",
-      en: "Rigorous technical support for studies, baselines, and impact assessment.",
+      es: "Trámites y estudios ambientales especializados ante ASEA, SEMARNAT y SEDEMA CDMX.",
+      en: "Specialized environmental permits and studies before ASEA, SEMARNAT, and SEDEMA CDMX.",
     },
     points: [
-      { es: "Líneas base ambientales", en: "Environmental baselines" },
-      { es: "Cartografía de riesgos", en: "Risk mapping" },
-      { es: "Apoyo a estudios de impacto", en: "Impact study support" },
+      { es: "Manifestación de Impacto Ambiental (ASEA · SEMARNAT)", en: "Environmental Impact Statement (ASEA · SEMARNAT)" },
+      { es: "Estudios Técnicos Justificativos para Cambio de Uso de Suelo en Terrenos Forestales", en: "Technical Justification Studies for Land-Use Change in Forestlands" },
+      { es: "Trámites ambientales en SEDEMA CDMX", en: "Environmental permits at SEDEMA CDMX" },
     ],
   },
 ];
