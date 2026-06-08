@@ -67,10 +67,17 @@ export const translations = {
 
 
   "contact.title": { es: "Hablemos", en: "Get in touch" },
+  "contact.intro": {
+    es: "Cuéntame sobre tu proyecto y te responderé pronto.",
+    en: "Tell me about your project and I'll get back to you soon.",
+  },
   "contact.name": { es: "Nombre", en: "Name" },
+  "contact.company": { es: "Empresa", en: "Company" },
   "contact.email": { es: "Correo electrónico", en: "Email" },
+  "contact.phone": { es: "Teléfono", en: "Phone" },
   "contact.subject": { es: "Asunto", en: "Subject" },
   "contact.message": { es: "Mensaje", en: "Message" },
+  "contact.optional": { es: "opcional", en: "optional" },
   "contact.send": { es: "Enviar mensaje", en: "Send message" },
   "contact.sending": { es: "Enviando…", en: "Sending…" },
   "contact.success": {
