@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      capas: {
+        Row: {
+          archivo_url: string | null
+          descripcion: string | null
+          fecha_subida: string
+          id: number
+          nombre: string
+          tamano: string | null
+          tipo: string
+        }
+        Insert: {
+          archivo_url?: string | null
+          descripcion?: string | null
+          fecha_subida?: string
+          id?: never
+          nombre: string
+          tamano?: string | null
+          tipo?: string
+        }
+        Update: {
+          archivo_url?: string | null
+          descripcion?: string | null
+          fecha_subida?: string
+          id?: never
+          nombre?: string
+          tamano?: string | null
+          tipo?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           company: string | null
@@ -50,6 +80,33 @@ export type Database = {
           name?: string
           phone?: string | null
           subject?: string | null
+        }
+        Relationships: []
+      }
+      galeria: {
+        Row: {
+          descripcion: string | null
+          fecha_creacion: string
+          id: number
+          imagen_url: string | null
+          orden: number
+          titulo: string
+        }
+        Insert: {
+          descripcion?: string | null
+          fecha_creacion?: string
+          id?: never
+          imagen_url?: string | null
+          orden?: number
+          titulo: string
+        }
+        Update: {
+          descripcion?: string | null
+          fecha_creacion?: string
+          id?: never
+          imagen_url?: string | null
+          orden?: number
+          titulo?: string
         }
         Relationships: []
       }
