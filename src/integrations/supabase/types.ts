@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       contact_messages: {
         Row: {
+          company: string | null
           created_at: string
           email: string
           id: string
@@ -23,9 +24,11 @@ export type Database = {
           locale: string
           message: string
           name: string
+          phone: string | null
           subject: string | null
         }
         Insert: {
+          company?: string | null
           created_at?: string
           email: string
           id?: string
@@ -33,9 +36,11 @@ export type Database = {
           locale?: string
           message: string
           name: string
+          phone?: string | null
           subject?: string | null
         }
         Update: {
+          company?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -43,6 +48,7 @@ export type Database = {
           locale?: string
           message?: string
           name?: string
+          phone?: string | null
           subject?: string | null
         }
         Relationships: []
