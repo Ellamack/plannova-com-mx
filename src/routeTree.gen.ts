@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CapasRouteImport } from './routes/capas'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const LoginRoute = LoginRouteImport.update({
@@ -35,6 +36,11 @@ const CapasRoute = CapasRouteImport.update({
   path: '/capas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +49,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/capas': typeof CapasRoute
   '/contacto': typeof ContactoRoute
   '/galeria': typeof GaleriaRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/capas': typeof CapasRoute
   '/contacto': typeof ContactoRoute
   '/galeria': typeof GaleriaRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/capas': typeof CapasRoute
   '/contacto': typeof ContactoRoute
   '/galeria': typeof GaleriaRoute
@@ -65,14 +74,22 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/capas' | '/contacto' | '/galeria' | '/login'
+  fullPaths: '/' | '/admin' | '/capas' | '/contacto' | '/galeria' | '/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/capas' | '/contacto' | '/galeria' | '/login'
-  id: '__root__' | '/' | '/capas' | '/contacto' | '/galeria' | '/login'
+  to: '/' | '/admin' | '/capas' | '/contacto' | '/galeria' | '/login'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/capas'
+    | '/contacto'
+    | '/galeria'
+    | '/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   CapasRoute: typeof CapasRoute
   ContactoRoute: typeof ContactoRoute
   GaleriaRoute: typeof GaleriaRoute
@@ -109,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CapasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,6 +145,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   CapasRoute: CapasRoute,
   ContactoRoute: ContactoRoute,
   GaleriaRoute: GaleriaRoute,

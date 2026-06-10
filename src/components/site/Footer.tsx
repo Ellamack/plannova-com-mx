@@ -43,8 +43,13 @@ export function Footer() {
         </nav>
       </div>
       <div className="border-t border-border">
-        <div className="mx-auto max-w-6xl px-4 py-4 text-xs text-muted-foreground sm:px-6">
-          © {new Date().getFullYear()} {site.name}. {t("footer.rights")}
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:px-6">
+          <span>
+            © {new Date().getFullYear()} {site.name}. {t("footer.rights")}
+          </span>
+          <Link to="/admin" className="transition-colors hover:text-foreground">
+            {t("nav.home") === "Home" ? "Admin" : "Administración"}
+          </Link>
         </div>
       </div>
     </footer>
