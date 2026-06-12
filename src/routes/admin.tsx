@@ -94,8 +94,8 @@ const tipoBadge: Record<string, string> = {
 const labels = {
   title: { es: "Panel de administración", en: "Admin panel" },
   intro: {
-    es: "Gestiona el contenido de la galería y las capas.",
-    en: "Manage the gallery and layers content.",
+    es: "Gestiona el contenido de galería, capas, servicios y proyectos.",
+    en: "Manage gallery, layers, services and projects content.",
   },
   needAuth: {
     es: "Necesitas iniciar sesión para acceder al panel.",
