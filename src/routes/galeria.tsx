@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Loader2, ImageIcon } from "lucide-react";
+import { Plus, Loader2, ImageIcon, Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/lib/i18n";
@@ -58,6 +58,9 @@ const labels = {
     en: "Maps, plates and cartographic products. Click any piece to see the detail.",
   },
   empty: { es: "Aún no hay imágenes en la galería.", en: "No images in the gallery yet." },
+  noMatch: { es: "No hay imágenes que coincidan.", en: "No images match." },
+  search: { es: "Buscar por título o descripción…", en: "Search by title or description…" },
+  add: { es: "Añadir imagen", en: "Add image" },
   uploaded: { es: "Subida el", en: "Uploaded on" },
   newImage: { es: "Nueva imagen", en: "New image" },
   newImageDesc: {
@@ -91,6 +94,7 @@ function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
   const [selected, setSelected] = useState<GaleriaItem | null>(null);
+  const [query, setQuery] = useState("");
 
   const [formOpen, setFormOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -132,6 +136,18 @@ function GalleryPage() {
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter(
+      (i) =>
+        i.titulo.toLowerCase().includes(q) ||
+        (i.descripcion?.toLowerCase().includes(q) ?? false),
+    );
+  }, [items, query]);
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,8 +191,31 @@ function GalleryPage() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <h1 className="font-display text-4xl font-semibold">Galería</h1>
-      <p className="mt-3 max-w-2xl text-muted-foreground">{L("intro")}</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl font-semibold">Galería</h1>
+          <p className="mt-3 max-w-2xl text-muted-foreground">{L("intro")}</p>
+        </div>
+        {isAuth && (
+          <Button onClick={() => setFormOpen(true)} className="shrink-0">
+            <Plus className="h-4 w-4" />
+            {L("add")}
+          </Button>
+        )}
+      </div>
+
+      {/* Filter */}
+      <div className="mt-8">
+        <div className="relative max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={L("search")}
+            className="pl-9"
+          />
+        </div>
+      </div>
 
       {loading ? (
         <div className="mt-16 flex justify-center">
@@ -187,9 +226,14 @@ function GalleryPage() {
           <ImageIcon className="h-10 w-10" />
           <p>{L("empty")}</p>
         </div>
+      ) : filtered.length === 0 ? (
+        <div className="mt-16 flex flex-col items-center gap-3 text-muted-foreground">
+          <ImageIcon className="h-10 w-10" />
+          <p>{L("noMatch")}</p>
+        </div>
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
+          {filtered.map((item) => (
             <button
               key={item.id}
               type="button"
@@ -259,17 +303,7 @@ function GalleryPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Floating add button (only for authenticated users) */}
-      {isAuth && (
-        <button
-          type="button"
-          onClick={() => setFormOpen(true)}
-          aria-label={L("newImage")}
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105"
-        >
-          <Plus className="h-6 w-6" />
-        </button>
-      )}
+
 
       {/* Upload form */}
       <Dialog open={formOpen} onOpenChange={(o) => !submitting && setFormOpen(o)}>

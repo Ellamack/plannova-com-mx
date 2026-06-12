@@ -23,12 +23,6 @@ export function Footer() {
             <span className="font-display text-lg font-semibold">{site.name}</span>
           </div>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">{t("footer.madeWith")}</p>
-          <a
-            href={`mailto:${site.email}`}
-            className="mt-3 inline-block text-sm text-primary hover:text-accent"
-          >
-            {site.email}
-          </a>
         </div>
         <nav className="flex flex-wrap gap-x-8 gap-y-2 md:justify-end">
           {links.map((l) => (
