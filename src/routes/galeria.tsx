@@ -58,6 +58,9 @@ const labels = {
     en: "Maps, plates and cartographic products. Click any piece to see the detail.",
   },
   empty: { es: "Aún no hay imágenes en la galería.", en: "No images in the gallery yet." },
+  noMatch: { es: "No hay imágenes que coincidan.", en: "No images match." },
+  search: { es: "Buscar por título o descripción…", en: "Search by title or description…" },
+  add: { es: "Añadir imagen", en: "Add image" },
   uploaded: { es: "Subida el", en: "Uploaded on" },
   newImage: { es: "Nueva imagen", en: "New image" },
   newImageDesc: {
