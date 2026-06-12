@@ -397,7 +397,26 @@ function AdminPage() {
             <Layers className="h-4 w-4" />
             {L("tabCapas")}
           </TabsTrigger>
+          <TabsTrigger value="servicios">
+            <Briefcase className="h-4 w-4" />
+            {L("tabServicios")}
+          </TabsTrigger>
+          <TabsTrigger value="proyectos">
+            <FolderKanban className="h-4 w-4" />
+            {L("tabProyectos")}
+          </TabsTrigger>
         </TabsList>
+
+        {/* ---- Servicios ---- */}
+        <TabsContent value="servicios" className="mt-6">
+          <ServiciosAdmin />
+        </TabsContent>
+
+        {/* ---- Proyectos ---- */}
+        <TabsContent value="proyectos" className="mt-6">
+          <ProyectosAdmin />
+        </TabsContent>
+
 
         {/* ---- Galería ---- */}
         <TabsContent value="galeria" className="mt-6">
