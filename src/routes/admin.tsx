@@ -106,6 +106,9 @@ const labels = {
   signedOut: { es: "Sesión cerrada.", en: "Signed out." },
   tabGaleria: { es: "Galería", en: "Gallery" },
   tabCapas: { es: "Capas", en: "Layers" },
+  tabServicios: { es: "Servicios", en: "Services" },
+  tabProyectos: { es: "Proyectos", en: "Projects" },
+
   reorderHint: {
     es: "Arrastra las imágenes para cambiar el orden. Se guarda automáticamente.",
     en: "Drag images to reorder. Saved automatically.",
