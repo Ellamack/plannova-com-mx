@@ -94,6 +94,7 @@ function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
   const [selected, setSelected] = useState<GaleriaItem | null>(null);
+  const [query, setQuery] = useState("");
 
   const [formOpen, setFormOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
