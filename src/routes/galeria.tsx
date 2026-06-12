@@ -191,8 +191,31 @@ function GalleryPage() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <h1 className="font-display text-4xl font-semibold">Galería</h1>
-      <p className="mt-3 max-w-2xl text-muted-foreground">{L("intro")}</p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl font-semibold">Galería</h1>
+          <p className="mt-3 max-w-2xl text-muted-foreground">{L("intro")}</p>
+        </div>
+        {isAuth && (
+          <Button onClick={() => setFormOpen(true)} className="shrink-0">
+            <Plus className="h-4 w-4" />
+            {L("add")}
+          </Button>
+        )}
+      </div>
+
+      {/* Filter */}
+      <div className="mt-8">
+        <div className="relative max-w-md">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={L("search")}
+            className="pl-9"
+          />
+        </div>
+      </div>
 
       {loading ? (
         <div className="mt-16 flex justify-center">
@@ -203,9 +226,14 @@ function GalleryPage() {
           <ImageIcon className="h-10 w-10" />
           <p>{L("empty")}</p>
         </div>
+      ) : filtered.length === 0 ? (
+        <div className="mt-16 flex flex-col items-center gap-3 text-muted-foreground">
+          <ImageIcon className="h-10 w-10" />
+          <p>{L("noMatch")}</p>
+        </div>
       ) : (
         <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
+          {filtered.map((item) => (
             <button
               key={item.id}
               type="button"
