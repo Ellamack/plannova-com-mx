@@ -73,6 +73,13 @@ function ContactPage() {
       <h1 className="font-display text-4xl font-semibold">{t("contact.title")}</h1>
       <p className="mt-3 text-muted-foreground">{t("contact.intro")}</p>
 
+      <a
+        href="mailto:plan.nova01@gmail.com"
+        className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+      >
+        plan.nova01@gmail.com
+      </a>
+
       <form onSubmit={onSubmit} className="mt-10 space-y-6">
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="space-y-2">
