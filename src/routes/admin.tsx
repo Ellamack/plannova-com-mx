@@ -9,6 +9,8 @@ import {
   ImageIcon,
   Layers,
   LogOut,
+  Briefcase,
+  FolderKanban,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,6 +46,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { ServiciosAdmin, ProyectosAdmin } from "@/components/admin/ContentAdmin";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -91,8 +94,8 @@ const tipoBadge: Record<string, string> = {
 const labels = {
   title: { es: "Panel de administración", en: "Admin panel" },
   intro: {
-    es: "Gestiona el contenido de la galería y las capas.",
-    en: "Manage the gallery and layers content.",
+    es: "Gestiona el contenido de galería, capas, servicios y proyectos.",
+    en: "Manage gallery, layers, services and projects content.",
   },
   needAuth: {
     es: "Necesitas iniciar sesión para acceder al panel.",
@@ -103,6 +106,9 @@ const labels = {
   signedOut: { es: "Sesión cerrada.", en: "Signed out." },
   tabGaleria: { es: "Galería", en: "Gallery" },
   tabCapas: { es: "Capas", en: "Layers" },
+  tabServicios: { es: "Servicios", en: "Services" },
+  tabProyectos: { es: "Proyectos", en: "Projects" },
+
   reorderHint: {
     es: "Arrastra las imágenes para cambiar el orden. Se guarda automáticamente.",
     en: "Drag images to reorder. Saved automatically.",
@@ -391,7 +397,26 @@ function AdminPage() {
             <Layers className="h-4 w-4" />
             {L("tabCapas")}
           </TabsTrigger>
+          <TabsTrigger value="servicios">
+            <Briefcase className="h-4 w-4" />
+            {L("tabServicios")}
+          </TabsTrigger>
+          <TabsTrigger value="proyectos">
+            <FolderKanban className="h-4 w-4" />
+            {L("tabProyectos")}
+          </TabsTrigger>
         </TabsList>
+
+        {/* ---- Servicios ---- */}
+        <TabsContent value="servicios" className="mt-6">
+          <ServiciosAdmin />
+        </TabsContent>
+
+        {/* ---- Proyectos ---- */}
+        <TabsContent value="proyectos" className="mt-6">
+          <ProyectosAdmin />
+        </TabsContent>
+
 
         {/* ---- Galería ---- */}
         <TabsContent value="galeria" className="mt-6">

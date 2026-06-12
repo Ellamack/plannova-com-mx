@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ServiciosRouteImport } from './routes/servicios'
+import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as ContactoRouteImport } from './routes/contacto'
@@ -16,6 +18,16 @@ import { Route as CapasRouteImport } from './routes/capas'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ServiciosRoute = ServiciosRouteImport.update({
+  id: '/servicios',
+  path: '/servicios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortafolioRoute = PortafolioRouteImport.update({
+  id: '/portafolio',
+  path: '/portafolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -54,6 +66,8 @@ export interface FileRoutesByFullPath {
   '/contacto': typeof ContactoRoute
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
+  '/portafolio': typeof PortafolioRoute
+  '/servicios': typeof ServiciosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +76,8 @@ export interface FileRoutesByTo {
   '/contacto': typeof ContactoRoute
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
+  '/portafolio': typeof PortafolioRoute
+  '/servicios': typeof ServiciosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +87,30 @@ export interface FileRoutesById {
   '/contacto': typeof ContactoRoute
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
+  '/portafolio': typeof PortafolioRoute
+  '/servicios': typeof ServiciosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/capas' | '/contacto' | '/galeria' | '/login'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/capas'
+    | '/contacto'
+    | '/galeria'
+    | '/login'
+    | '/portafolio'
+    | '/servicios'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/capas' | '/contacto' | '/galeria' | '/login'
+  to:
+    | '/'
+    | '/admin'
+    | '/capas'
+    | '/contacto'
+    | '/galeria'
+    | '/login'
+    | '/portafolio'
+    | '/servicios'
   id:
     | '__root__'
     | '/'
@@ -85,6 +119,8 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/galeria'
     | '/login'
+    | '/portafolio'
+    | '/servicios'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,10 +130,26 @@ export interface RootRouteChildren {
   ContactoRoute: typeof ContactoRoute
   GaleriaRoute: typeof GaleriaRoute
   LoginRoute: typeof LoginRoute
+  PortafolioRoute: typeof PortafolioRoute
+  ServiciosRoute: typeof ServiciosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/servicios': {
+      id: '/servicios'
+      path: '/servicios'
+      fullPath: '/servicios'
+      preLoaderRoute: typeof ServiciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portafolio': {
+      id: '/portafolio'
+      path: '/portafolio'
+      fullPath: '/portafolio'
+      preLoaderRoute: typeof PortafolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -150,6 +202,8 @@ const rootRouteChildren: RootRouteChildren = {
   ContactoRoute: ContactoRoute,
   GaleriaRoute: GaleriaRoute,
   LoginRoute: LoginRoute,
+  PortafolioRoute: PortafolioRoute,
+  ServiciosRoute: ServiciosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
