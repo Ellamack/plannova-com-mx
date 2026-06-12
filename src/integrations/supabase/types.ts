@@ -110,6 +110,60 @@ export type Database = {
         }
         Relationships: []
       }
+      proyectos: {
+        Row: {
+          descripcion: string | null
+          fecha_creacion: string
+          id: number
+          imagen_url: string | null
+          orden: number
+          tecnologias: string[]
+          titulo: string
+        }
+        Insert: {
+          descripcion?: string | null
+          fecha_creacion?: string
+          id?: never
+          imagen_url?: string | null
+          orden?: number
+          tecnologias?: string[]
+          titulo: string
+        }
+        Update: {
+          descripcion?: string | null
+          fecha_creacion?: string
+          id?: never
+          imagen_url?: string | null
+          orden?: number
+          tecnologias?: string[]
+          titulo?: string
+        }
+        Relationships: []
+      }
+      servicios: {
+        Row: {
+          descripcion: string | null
+          fecha_creacion: string
+          id: number
+          nombre: string
+          orden: number
+        }
+        Insert: {
+          descripcion?: string | null
+          fecha_creacion?: string
+          id?: never
+          nombre: string
+          orden?: number
+        }
+        Update: {
+          descripcion?: string | null
+          fecha_creacion?: string
+          id?: never
+          nombre?: string
+          orden?: number
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
