@@ -303,17 +303,7 @@ function GalleryPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Floating add button (only for authenticated users) */}
-      {isAuth && (
-        <button
-          type="button"
-          onClick={() => setFormOpen(true)}
-          aria-label={L("newImage")}
-          className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105"
-        >
-          <Plus className="h-6 w-6" />
-        </button>
-      )}
+
 
       {/* Upload form */}
       <Dialog open={formOpen} onOpenChange={(o) => !submitting && setFormOpen(o)}>
