@@ -137,6 +137,18 @@ function GalleryPage() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter(
+      (i) =>
+        i.titulo.toLowerCase().includes(q) ||
+        (i.descripcion?.toLowerCase().includes(q) ?? false),
+    );
+  }, [items, query]);
+
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fFile) {
