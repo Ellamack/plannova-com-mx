@@ -20,7 +20,6 @@ export const assets = {
 
 export const site = {
   name: "Planispherium Nova",
-  email: "hola@planispheriumnova.com",
 };
 
 export interface Service {
