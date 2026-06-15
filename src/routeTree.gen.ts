@@ -13,8 +13,10 @@ import { Route as ServiciosRouteImport } from './routes/servicios'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as DemRouteImport } from './routes/dem'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CapasRouteImport } from './routes/capas'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -38,6 +40,11 @@ const GaleriaRoute = GaleriaRouteImport.update({
   path: '/galeria',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DemRoute = DemRouteImport.update({
+  id: '/dem',
+  path: '/dem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactoRoute = ContactoRouteImport.update({
   id: '/contacto',
   path: '/contacto',
@@ -46,6 +53,11 @@ const ContactoRoute = ContactoRouteImport.update({
 const CapasRoute = CapasRouteImport.update({
   id: '/capas',
   path: '/capas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -62,8 +74,10 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/blog': typeof BlogRoute
   '/capas': typeof CapasRoute
   '/contacto': typeof ContactoRoute
+  '/dem': typeof DemRoute
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
   '/portafolio': typeof PortafolioRoute
@@ -72,8 +86,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/blog': typeof BlogRoute
   '/capas': typeof CapasRoute
   '/contacto': typeof ContactoRoute
+  '/dem': typeof DemRoute
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
   '/portafolio': typeof PortafolioRoute
@@ -83,8 +99,10 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/blog': typeof BlogRoute
   '/capas': typeof CapasRoute
   '/contacto': typeof ContactoRoute
+  '/dem': typeof DemRoute
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
   '/portafolio': typeof PortafolioRoute
@@ -95,8 +113,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/blog'
     | '/capas'
     | '/contacto'
+    | '/dem'
     | '/galeria'
     | '/login'
     | '/portafolio'
@@ -105,8 +125,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/blog'
     | '/capas'
     | '/contacto'
+    | '/dem'
     | '/galeria'
     | '/login'
     | '/portafolio'
@@ -115,8 +137,10 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/blog'
     | '/capas'
     | '/contacto'
+    | '/dem'
     | '/galeria'
     | '/login'
     | '/portafolio'
@@ -126,8 +150,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  BlogRoute: typeof BlogRoute
   CapasRoute: typeof CapasRoute
   ContactoRoute: typeof ContactoRoute
+  DemRoute: typeof DemRoute
   GaleriaRoute: typeof GaleriaRoute
   LoginRoute: typeof LoginRoute
   PortafolioRoute: typeof PortafolioRoute
@@ -164,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GaleriaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dem': {
+      id: '/dem'
+      path: '/dem'
+      fullPath: '/dem'
+      preLoaderRoute: typeof DemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contacto': {
       id: '/contacto'
       path: '/contacto'
@@ -176,6 +209,13 @@ declare module '@tanstack/react-router' {
       path: '/capas'
       fullPath: '/capas'
       preLoaderRoute: typeof CapasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -198,8 +238,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  BlogRoute: BlogRoute,
   CapasRoute: CapasRoute,
   ContactoRoute: ContactoRoute,
+  DemRoute: DemRoute,
   GaleriaRoute: GaleriaRoute,
   LoginRoute: LoginRoute,
   PortafolioRoute: PortafolioRoute,
@@ -208,3 +250,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
