@@ -1,145 +1,165 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Compass, Layers, Satellite, Leaf, Map } from "lucide-react";
-import { useLanguage, pick } from "@/lib/i18n";
-import { assets, services, projects } from "@/lib/content";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Images,
+  Leaf,
+  Layers,
+  BookOpen,
+  FileDigit,
+  Globe,
+} from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
+import { assets } from "@/lib/content";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Planispherium Nova — Cartografía, SIG y Teledetección" },
+      { title: "Planispherium Nova — Recorte DEM, curvas de nivel y derivados" },
       {
         name: "description",
         content:
-          "Estudio de cartografía y ciencias de la tierra: SIG, teledetección, consultoría ambiental, capas de datos y galería naturalista.",
+          "Recorte de DEM, curvas de nivel y derivados para cualquier zona de México y el mundo. Sube tu polígono y recibe tu modelo digital listo.",
       },
       { property: "og:title", content: "Planispherium Nova" },
-      { property: "og:description", content: "Cartografía, SIG, teledetección y consultoría ambiental." },
+      {
+        property: "og:description",
+        content: "Recorte DEM, curvas de nivel y derivados para cualquier zona.",
+      },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
   component: Index,
 });
 
-const iconMap = { Layers, Satellite, Leaf, Map } as const;
+const exploreCards = [
+  {
+    to: "/galeria",
+    icon: Images,
+    title: { es: "Galería de ilustraciones SVG", en: "SVG Illustration Gallery" },
+    description: {
+      es: "Mapas y láminas naturalistas disponibles como productos digitales.",
+      en: "Maps and naturalist prints available as digital products.",
+    },
+  },
+  {
+    to: "/servicios",
+    icon: Leaf,
+    title: { es: "Consultoría Ambiental", en: "Environmental Consulting" },
+    description: {
+      es: "Trámites y estudios ambientales ante ASEA, SEMARNAT y SEDEMA CDMX.",
+      en: "Environmental permits and studies before ASEA, SEMARNAT and SEDEMA CDMX.",
+    },
+  },
+  {
+    to: "/capas",
+    icon: Layers,
+    title: { es: "Capas GIS", en: "GIS Layers" },
+    description: {
+      es: "Red hidrográfica, curvas de nivel, cobertura vegetal y más.",
+      en: "Hydrographic network, contour lines, vegetation cover and more.",
+    },
+  },
+  {
+    to: "/blog",
+    icon: BookOpen,
+    title: { es: "Blog", en: "Blog" },
+    description: {
+      es: "Artículos sobre cartografía, teledetección y ciencias de la tierra.",
+      en: "Articles on cartography, remote sensing and earth sciences.",
+    },
+  },
+];
 
 function Index() {
-  const { locale, t } = useLanguage();
+  const { locale } = useLanguage();
 
   return (
     <>
-      <section className="relative overflow-hidden">
+      {/* Hero */}
+      <section className="relative flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center overflow-hidden px-4 text-center">
         <img
           src={assets.heroCartography}
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover opacity-25"
+          className="absolute inset-0 h-full w-full object-cover opacity-20"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/85 to-background" />
-        <div className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6 md:py-32">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            <Compass className="h-3.5 w-3.5 text-accent" /> {t("brand.tagline")}
-          </span>
-          <h1 className="mt-6 max-w-3xl font-display text-4xl font-semibold leading-tight text-foreground sm:text-6xl">
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/85 to-background" />
+
+        <div className="relative z-10 mx-auto max-w-4xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            <Globe className="h-3.5 w-3.5 text-accent" />
+            {locale === "es" ? "México y el mundo" : "Mexico and worldwide"}
+          </div>
+
+          <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-5xl md:text-6xl">
             {locale === "es"
-              ? "Mapas que revelan el territorio."
-              : "Maps that reveal the landscape."}
+              ? "Recorte DEM con curvas de nivel y derivados"
+              : "DEM clip with contour lines and derivatives"}
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
             {locale === "es"
-              ? "Cartografía, SIG, teledetección y consultoría ambiental — con rigor científico y un toque de arte naturalista. ¡Vamos, ánimo!"
-              : "Cartography, GIS, remote sensing, and environmental consulting — with scientific rigor and a touch of naturalist art."}
+              ? "Sube tu polígono y recibe tu modelo digital de elevaciones listo para trabajar. Cualquier zona de México o el mundo."
+              : "Upload your polygon and receive your digital elevation model ready to work. Any area in Mexico or worldwide."}
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+
+          <div className="mt-10 flex flex-col items-center gap-4">
             <Link
-              to="/servicios"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              to="/dem"
+              className="inline-flex items-center gap-3 rounded-full bg-accent px-8 py-4 text-base font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-transform hover:scale-105"
             >
-              {t("cta.explore")} <ArrowRight className="h-4 w-4" />
+              {locale === "es" ? "Procesar mi área ahora" : "Process my area now"}
+              <ArrowRight className="h-5 w-5" />
             </Link>
-            <Link
-              to="/portafolio"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-5 py-3 text-sm font-medium text-foreground transition-colors hover:bg-card"
-            >
-              {t("cta.viewWork")}
-            </Link>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+              <span className="text-xs text-muted-foreground">
+                {locale === "es" ? "Formatos: " : "Formats: "}
+              </span>
+              {[".shp", ".kml", ".kmz", ".geojson"].map((fmt) => (
+                <span
+                  key={fmt}
+                  className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-[11px] font-medium text-muted-foreground"
+                >
+                  <FileDigit className="h-3 w-3 text-accent" />
+                  {fmt}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="graticule">
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-          <div className="flex items-end justify-between gap-4">
-            <h2 className="font-display text-3xl font-semibold">{t("nav.services")}</h2>
-            <Link to="/servicios" className="text-sm text-primary hover:text-accent">
-              {t("cta.viewAll")} →
-            </Link>
-          </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((s) => {
-              const Icon = iconMap[s.icon as keyof typeof iconMap] ?? Map;
+      {/* Explore cards */}
+      <section className="relative z-10 border-t border-border bg-background">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {exploreCards.map((card) => {
+              const Icon = card.icon;
               return (
-                <div
-                  key={s.slug}
-                  className="rounded-lg border border-border bg-card p-6 transition-shadow hover:shadow-md"
+                <Link
+                  key={card.to}
+                  to={card.to}
+                  className="group flex flex-col rounded-xl border border-border bg-card p-5 transition-colors hover:border-accent/50 hover:bg-accent/5"
                 >
-                  <Icon className="h-7 w-7 text-accent" strokeWidth={1.5} />
-                  <h3 className="mt-4 font-display text-lg font-semibold">{pick(s.title, locale)}</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">{pick(s.summary, locale)}</p>
-                </div>
+                  <div className="flex items-center justify-between">
+                    <Icon
+                      className="h-6 w-6 text-accent transition-transform group-hover:scale-110"
+                      strokeWidth={1.5}
+                    />
+                    <ArrowUpRight className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+                  </div>
+                  <h3 className="mt-4 font-display text-base font-semibold text-foreground">
+                    {locale === "es" ? card.title.es : card.title.en}
+                  </h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {locale === "es" ? card.description.es : card.description.en}
+                  </p>
+                </Link>
               );
             })}
           </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="font-display text-3xl font-semibold">{t("nav.portfolio")}</h2>
-          <Link to="/portafolio" className="text-sm text-primary hover:text-accent">
-            {t("cta.viewAll")} →
-          </Link>
-        </div>
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {projects.map((p) => (
-            <article key={p.slug} className="group overflow-hidden rounded-lg border border-border bg-card">
-              <div className="aspect-[5/4] overflow-hidden">
-                <img
-                  src={p.image}
-                  alt={pick(p.title, locale)}
-                  loading="lazy"
-                  width={1000}
-                  height={800}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-5">
-                <p className="text-xs uppercase tracking-wide text-accent">{pick(p.category, locale)}</p>
-                <h3 className="mt-1 font-display text-lg font-semibold">{pick(p.title, locale)}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{pick(p.description, locale)}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-y border-border bg-primary text-primary-foreground">
-        <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 py-16 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 className="font-display text-3xl font-semibold">
-              {locale === "es" ? "¿Tienes un proyecto en mente?" : "Have a project in mind?"}
-            </h2>
-            <p className="mt-2 max-w-xl text-primary-foreground/80">
-              {locale === "es"
-                ? "Cuéntame qué territorio quieres entender y construyamos el mapa juntos."
-                : "Tell me which landscape you want to understand and let's build the map together."}
-            </p>
-          </div>
-          <Link
-            to="/contacto"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-accent-foreground transition-transform hover:scale-105"
-          >
-            {t("cta.contact")} <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </section>
     </>
