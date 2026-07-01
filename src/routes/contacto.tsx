@@ -59,11 +59,12 @@ function ContactPage() {
           email: form.email,
           phone: form.phone,
           message: form.message,
+          contourInterval: Number(form.contourInterval) || 100,
           locale,
         },
       });
       setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", message: "" });
+      setForm({ name: "", company: "", email: "", phone: "", contourInterval: "100", message: "" });
     } catch {
       setStatus("error");
     }
