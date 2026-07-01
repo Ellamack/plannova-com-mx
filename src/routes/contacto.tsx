@@ -40,6 +40,7 @@ function ContactPage() {
     company: "",
     email: "",
     phone: "",
+    contourInterval: "100",
     message: "",
   });
 
@@ -58,11 +59,12 @@ function ContactPage() {
           email: form.email,
           phone: form.phone,
           message: form.message,
+          contourInterval: Number(form.contourInterval) || 100,
           locale,
         },
       });
       setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", message: "" });
+      setForm({ name: "", company: "", email: "", phone: "", contourInterval: "100", message: "" });
     } catch {
       setStatus("error");
     }
@@ -129,6 +131,22 @@ function ContactPage() {
             />
           </div>
         </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="contourInterval">{t("contact.contour")}</Label>
+          <Input
+            id="contourInterval"
+            type="number"
+            min={1}
+            max={10000}
+            step={1}
+            placeholder="100"
+            value={form.contourInterval}
+            onChange={update("contourInterval")}
+          />
+          <p className="text-xs text-muted-foreground">{t("contact.contourHint")}</p>
+        </div>
+
 
         <div className="space-y-2">
           <Label htmlFor="message">{t("contact.message")}</Label>

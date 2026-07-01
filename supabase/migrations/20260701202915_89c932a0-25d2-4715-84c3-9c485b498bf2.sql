@@ -1,0 +1,1 @@
+ALTER TABLE public.contact_messages ADD COLUMN IF NOT EXISTS contour_interval integer NOT NULL DEFAULT 100;
