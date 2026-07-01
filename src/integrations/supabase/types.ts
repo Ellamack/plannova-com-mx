@@ -47,6 +47,7 @@ export type Database = {
       contact_messages: {
         Row: {
           company: string | null
+          contour_interval: number
           created_at: string
           email: string
           id: string
@@ -59,6 +60,7 @@ export type Database = {
         }
         Insert: {
           company?: string | null
+          contour_interval?: number
           created_at?: string
           email: string
           id?: string
@@ -71,6 +73,7 @@ export type Database = {
         }
         Update: {
           company?: string | null
+          contour_interval?: number
           created_at?: string
           email?: string
           id?: string
