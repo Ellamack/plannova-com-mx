@@ -77,6 +77,14 @@ export const translations = {
   "contact.phone": { es: "Teléfono", en: "Phone" },
   "contact.subject": { es: "Asunto", en: "Subject" },
   "contact.message": { es: "Mensaje", en: "Message" },
+  "contact.contour": {
+    es: "Separación entre curvas de nivel (m)",
+    en: "Contour line interval (m)",
+  },
+  "contact.contourHint": {
+    es: "Valor predeterminado: 100 m",
+    en: "Default value: 100 m",
+  },
   "contact.optional": { es: "opcional", en: "optional" },
   "contact.send": { es: "Enviar mensaje", en: "Send message" },
   "contact.sending": { es: "Enviando…", en: "Sending…" },
