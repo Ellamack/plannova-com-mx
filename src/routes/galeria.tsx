@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Loader2, ImageIcon, Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useLanguage } from "@/lib/i18n";
 import {
   Dialog,
@@ -92,7 +93,7 @@ function GalleryPage() {
 
   const [items, setItems] = useState<GaleriaItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuth, setIsAuth] = useState(false);
+  const { isAdmin } = useIsAdmin();
   const [selected, setSelected] = useState<GaleriaItem | null>(null);
   const [query, setQuery] = useState("");
 
