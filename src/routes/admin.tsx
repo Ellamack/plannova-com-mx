@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useLanguage } from "@/lib/i18n";
 import {
   Dialog,
@@ -155,20 +156,8 @@ function AdminPage() {
   const navigate = useNavigate();
   const L = (k: keyof typeof labels) => labels[k][locale];
 
-  const [authChecked, setAuthChecked] = useState(false);
-  const [isAuth, setIsAuth] = useState(false);
+  const { isAdmin, checked: authChecked } = useIsAdmin();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setIsAuth(!!data.session);
-      setAuthChecked(true);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setIsAuth(!!session);
-      setAuthChecked(true);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   // ---- Galería state ----
   const [galeria, setGaleria] = useState<(GaleriaRow & { resolvedUrl: string | null })[]>([]);
@@ -218,11 +207,11 @@ function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (isAuth) {
+    if (isAdmin) {
       loadGaleria();
       loadCapas();
     }
-  }, [isAuth, loadGaleria, loadCapas]);
+  }, [isAdmin, loadGaleria, loadCapas]);
 
   // ---- Edit dialogs ----
   const [editG, setEditG] = useState<GaleriaRow | null>(null);
@@ -361,7 +350,7 @@ function AdminPage() {
     );
   }
 
-  if (!isAuth) {
+  if (!isAdmin) {
     return (
       <section className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 py-16 text-center">
         <Compass className="h-10 w-10 text-accent" strokeWidth={1.5} />

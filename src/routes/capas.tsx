@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Loader2, Layers, Download, Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useLanguage } from "@/lib/i18n";
 import {
   Dialog,
@@ -122,7 +123,7 @@ function CapasPage() {
 
   const [items, setItems] = useState<CapaRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuth, setIsAuth] = useState(false);
+  const { isAdmin } = useIsAdmin();
 
   const [query, setQuery] = useState("");
   const [tipoFilter, setTipoFilter] = useState<string>("all");
@@ -156,13 +157,6 @@ function CapasPage() {
     load();
   }, [load]);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setIsAuth(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuth(!!session);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   const availableTypes = useMemo(
     () => Array.from(new Set(items.map((i) => i.tipo))).sort(),
@@ -255,7 +249,7 @@ function CapasPage() {
           <h1 className="font-display text-4xl font-semibold">Capas</h1>
           <p className="mt-3 max-w-2xl text-muted-foreground">{L("intro")}</p>
         </div>
-        {isAuth && (
+        {isAdmin && (
           <Button onClick={() => setFormOpen(true)} className="shrink-0">
             <Plus className="h-4 w-4" />
             {L("add")}
