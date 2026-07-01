@@ -156,20 +156,8 @@ function AdminPage() {
   const navigate = useNavigate();
   const L = (k: keyof typeof labels) => labels[k][locale];
 
-  const [authChecked, setAuthChecked] = useState(false);
-  const [isAuth, setIsAuth] = useState(false);
+  const { isAdmin, checked: authChecked } = useIsAdmin();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setIsAuth(!!data.session);
-      setAuthChecked(true);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setIsAuth(!!session);
-      setAuthChecked(true);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   // ---- Galería state ----
   const [galeria, setGaleria] = useState<(GaleriaRow & { resolvedUrl: string | null })[]>([]);
