@@ -123,7 +123,7 @@ function CapasPage() {
 
   const [items, setItems] = useState<CapaRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAuth, setIsAuth] = useState(false);
+  const { isAdmin } = useIsAdmin();
 
   const [query, setQuery] = useState("");
   const [tipoFilter, setTipoFilter] = useState<string>("all");
