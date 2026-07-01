@@ -207,11 +207,11 @@ function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (isAuth) {
+    if (isAdmin) {
       loadGaleria();
       loadCapas();
     }
-  }, [isAuth, loadGaleria, loadCapas]);
+  }, [isAdmin, loadGaleria, loadCapas]);
 
   // ---- Edit dialogs ----
   const [editG, setEditG] = useState<GaleriaRow | null>(null);
