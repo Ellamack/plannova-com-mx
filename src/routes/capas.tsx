@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Loader2, Layers, Download, Search } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useLanguage } from "@/lib/i18n";
 import {
   Dialog,
