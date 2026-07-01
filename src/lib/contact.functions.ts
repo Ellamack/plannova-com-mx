@@ -7,6 +7,7 @@ const contactSchema = z.object({
   email: z.string().trim().email().max(255),
   phone: z.string().trim().max(40).optional().default(""),
   message: z.string().trim().min(1).max(2000),
+  contourInterval: z.coerce.number().int().min(1).max(10000).default(100),
   locale: z.enum(["es", "en"]).default("es"),
 });
 
@@ -20,6 +21,7 @@ export const submitContact = createServerFn({ method: "POST" })
       email: data.email,
       phone: data.phone || null,
       message: data.message,
+      contour_interval: data.contourInterval,
       locale: data.locale,
     });
     if (error) {
