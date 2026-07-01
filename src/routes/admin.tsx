@@ -350,7 +350,7 @@ function AdminPage() {
     );
   }
 
-  if (!isAuth) {
+  if (!isAdmin) {
     return (
       <section className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 py-16 text-center">
         <Compass className="h-10 w-10 text-accent" strokeWidth={1.5} />
