@@ -40,6 +40,7 @@ function ContactPage() {
     company: "",
     email: "",
     phone: "",
+    contourInterval: "100",
     message: "",
   });
 
