@@ -130,13 +130,6 @@ function GalleryPage() {
     load();
   }, [load]);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setIsAuth(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuth(!!session);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
