@@ -157,13 +157,6 @@ function CapasPage() {
     load();
   }, [load]);
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setIsAuth(!!data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuth(!!session);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
 
   const availableTypes = useMemo(
     () => Array.from(new Set(items.map((i) => i.tipo))).sort(),
