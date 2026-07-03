@@ -69,7 +69,7 @@ function ContactPage() {
         },
       });
       setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", contourInterval: "100", message: "" });
+      setForm({ name: "", company: "", email: "", phone: "", contourInterval: String(contour ?? 100), message: "" });
     } catch {
       setStatus("error");
     }
