@@ -10,6 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/contacto")({
+  validateSearch: (search: Record<string, unknown>): { contour?: number } => {
+    const raw = Number(search.contour);
+    return Number.isFinite(raw) ? { contour: raw } : {};
+  },
   head: () => ({
     meta: [
       { title: "Contacto — Planispherium Nova" },
@@ -33,6 +37,7 @@ type Status = "idle" | "sending" | "success" | "error";
 
 function ContactPage() {
   const { locale, t } = useLanguage();
+  const { contour } = Route.useSearch();
   const send = useServerFn(submitContact);
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState({
@@ -40,7 +45,7 @@ function ContactPage() {
     company: "",
     email: "",
     phone: "",
-    contourInterval: "100",
+    contourInterval: String(contour ?? 100),
     message: "",
   });
 
@@ -64,7 +69,7 @@ function ContactPage() {
         },
       });
       setStatus("success");
-      setForm({ name: "", company: "", email: "", phone: "", contourInterval: "100", message: "" });
+      setForm({ name: "", company: "", email: "", phone: "", contourInterval: String(contour ?? 100), message: "" });
     } catch {
       setStatus("error");
     }
@@ -132,20 +137,7 @@ function ContactPage() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="contourInterval">{t("contact.contour")}</Label>
-          <Input
-            id="contourInterval"
-            type="number"
-            min={1}
-            max={10000}
-            step={1}
-            placeholder="100"
-            value={form.contourInterval}
-            onChange={update("contourInterval")}
-          />
-          <p className="text-xs text-muted-foreground">{t("contact.contourHint")}</p>
-        </div>
+
 
 
         <div className="space-y-2">
