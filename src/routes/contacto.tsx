@@ -37,6 +37,7 @@ type Status = "idle" | "sending" | "success" | "error";
 
 function ContactPage() {
   const { locale, t } = useLanguage();
+  const { contour } = Route.useSearch();
   const send = useServerFn(submitContact);
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState({
@@ -44,7 +45,7 @@ function ContactPage() {
     company: "",
     email: "",
     phone: "",
-    contourInterval: "100",
+    contourInterval: String(contour ?? 100),
     message: "",
   });
 
