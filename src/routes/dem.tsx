@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, FileDigit, Globe } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/dem")({
   head: () => ({
@@ -18,7 +21,8 @@ export const Route = createFileRoute("/dem")({
 });
 
 function DemPage() {
-  const { locale } = useLanguage();
+  const { locale, t } = useLanguage();
+  const [contour, setContour] = useState("100");
 
   return (
     <section className="mx-auto max-w-3xl px-4 py-24 text-center sm:py-32">
@@ -51,9 +55,25 @@ function DemPage() {
         ))}
       </div>
 
+      <div className="mx-auto mt-10 max-w-xs space-y-2 text-left">
+        <Label htmlFor="contourInterval">{t("contact.contour")}</Label>
+        <Input
+          id="contourInterval"
+          type="number"
+          min={1}
+          max={10000}
+          step={1}
+          placeholder="100"
+          value={contour}
+          onChange={(e) => setContour(e.target.value)}
+        />
+        <p className="text-xs text-muted-foreground">{t("contact.contourHint")}</p>
+      </div>
+
       <div className="mt-10">
         <Link
           to="/contacto"
+          search={{ contour: Number(contour) || 100 }}
           className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-transform hover:scale-105"
         >
           {locale === "es" ? "Solicitar recorte DEM" : "Request DEM clip"}
