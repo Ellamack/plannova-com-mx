@@ -10,6 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/contacto")({
+  validateSearch: (search: Record<string, unknown>): { contour?: number } => {
+    const raw = Number(search.contour);
+    return Number.isFinite(raw) ? { contour: raw } : {};
+  },
   head: () => ({
     meta: [
       { title: "Contacto — Planispherium Nova" },
