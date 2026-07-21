@@ -1,23 +1,24 @@
+cat > /var/www/plannova/src/routes/oficio.tsx << 'ENDOFFILE'
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { FileText, FileSpreadsheet, Download, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
-export const Route = createFileRoute("/oficio-art59")({
+export const Route = createFileRoute("/oficio")({
   head: () => ({
     meta: [
       { title: "Generador de Oficio Art. 59 — Planispherium Nova" },
       {
         name: "description",
-        content: "Genera automáticamente el oficio de Opinión Técnica del Artículo 59 de la Ley Agraria a partir del oficio RAN y el Excel de parcelas.",
+        content: "Genera automáticamente el oficio de Opinión Técnica del Artículo 59 de la Ley Agraria.",
       },
     ],
   }),
-  component: OficioArt59Page,
+  component: OficioPage,
 });
 
 type Estado = "idle" | "procesando" | "listo" | "error";
 
-function OficioArt59Page() {
+function OficioPage() {
   const [pdf, setPdf] = useState<File | null>(null);
   const [excel, setExcel] = useState<File | null>(null);
   const [estado, setEstado] = useState<Estado>("idle");
@@ -30,25 +31,20 @@ function OficioArt59Page() {
       setEstado("error");
       return;
     }
-
     setEstado("procesando");
     setMensajeError("");
-
     const formData = new FormData();
     formData.append("pdf", pdf);
     formData.append("excel", excel);
-
     try {
       const response = await fetch("https://plannova.com.mx/api/oficio-art59", {
         method: "POST",
         body: formData,
       });
-
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.detail || "Error en el servidor.");
       }
-
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       setUrlDescarga(url);
@@ -70,9 +66,7 @@ function OficioArt59Page() {
           automáticamente el oficio de Opinión Técnica listo para revisar y firmar.
         </p>
       </div>
-
       <div className="space-y-6">
-        {/* PDF */}
         <div className="rounded-xl border border-border bg-card p-6">
           <label className="flex cursor-pointer flex-col items-center gap-3 text-center">
             <FileText className="h-8 w-8 text-accent" />
@@ -95,8 +89,6 @@ function OficioArt59Page() {
             />
           </label>
         </div>
-
-        {/* Excel */}
         <div className="rounded-xl border border-border bg-card p-6">
           <label className="flex cursor-pointer flex-col items-center gap-3 text-center">
             <FileSpreadsheet className="h-8 w-8 text-accent" />
@@ -119,8 +111,6 @@ function OficioArt59Page() {
             />
           </label>
         </div>
-
-        {/* Botón */}
         <button
           onClick={handleSubmit}
           disabled={estado === "procesando"}
@@ -135,12 +125,10 @@ function OficioArt59Page() {
             "Generar Oficio"
           )}
         </button>
-
-       {/* Estado: listo */}
         {estado === "listo" && (
           <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-6 text-center">
             <CheckCircle className="mx-auto h-8 w-8 text-green-500" />
-            <p className="mt-2 font-medium text-foreground">¡Oficio generado!</p>
+            <p className="mt-2 font-medium text-foreground">Oficio generado</p>
             <p className="mt-1 text-sm text-muted-foreground">
               Revisa el documento antes de firmarlo.
             </p>
@@ -154,8 +142,6 @@ function OficioArt59Page() {
             </a>
           </div>
         )}
-
-        {/* Estado: error */}
         {estado === "error" && (
           <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-6 text-center">
             <AlertCircle className="mx-auto h-8 w-8 text-red-500" />
@@ -173,3 +159,4 @@ function OficioArt59Page() {
     </section>
   );
 }
+ENDOFFILE
