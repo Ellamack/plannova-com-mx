@@ -136,7 +136,7 @@ function OficioArt59Page() {
           )}
         </button>
 
-        {/* Estado: listo */}
+       {/* Estado: listo */}
         {estado === "listo" && (
           <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-6 text-center">
             <CheckCircle className="mx-auto h-8 w-8 text-green-500" />
