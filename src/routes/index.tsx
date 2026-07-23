@@ -69,6 +69,15 @@ const exploreCards = [
       en: "Articles on cartography, remote sensing and earth sciences.",
     },
   },
+  {
+    to: "/oficio",
+    icon: FileDigit,
+    title: { es: "🟥 Alfombra Roja — Personal SEMARNAT", en: "🟥 Red Carpet — SEMARNAT Staff" },
+    description: {
+      es: "¿Eres de SEMARNAT? Aquí no juzgamos a nadie. Genera tus oficios Art. 59 en segundos.",
+      en: "SEMARNAT staff only. Generate your Art. 59 official letters in seconds.",
+    },
+  },
 ];
 
 function Index() {
