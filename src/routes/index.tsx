@@ -74,7 +74,7 @@ const exploreCards = [
     icon: FileDigit,
     title: { es: "🟥 Alfombra Roja — Personal SEMARNAT", en: "🟥 Red Carpet — SEMARNAT Staff" },
     description: {
-      es: "¿Eres de SEMARNAT? Aquí no juzgamos a nadie. Genera tus oficios Art. 59 en segundos.",
+      es: "¿Eres de SEMARNAT? Aquí no juzgamos a nadie. Genera tus oficios Art. 59 y dictamen en segundos.",
       en: "SEMARNAT staff only. Generate your Art. 59 official letters in seconds.",
     },
   },
