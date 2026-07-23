@@ -75,7 +75,7 @@ const exploreCards = [
     title: { es: "🟥 Alfombra Roja — Personal SEMARNAT", en: "🟥 Red Carpet — SEMARNAT Staff" },
     description: {
       es: "¿Eres de SEMARNAT? Aquí no juzgamos a nadie. Genera tus oficios Art. 59 y dictamen en segundos.",
-      en: "SEMARNAT staff only. Generate your Art. 59 official letters in seconds.",
+      en: "SEMARNAT staff only. Generate your Art. 59 official letters and technical opinion in seconds.",
     },
   },
 ];
