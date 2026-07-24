@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServiciosRouteImport } from './routes/servicios'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
+import { Route as OficioRouteImport } from './routes/oficio'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GaleriaRouteImport } from './routes/galeria'
@@ -32,6 +33,11 @@ const ServiciosRoute = ServiciosRouteImport.update({
 const PortafolioRoute = PortafolioRouteImport.update({
   id: '/portafolio',
   path: '/portafolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OficioRoute = OficioRouteImport.update({
+  id: '/oficio',
+  path: '/oficio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
   '/servicios': typeof ServiciosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
   '/servicios': typeof ServiciosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/galeria': typeof GaleriaRoute
   '/login': typeof LoginRoute
   '/mcp': typeof McpRoute
+  '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
   '/servicios': typeof ServiciosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/login'
     | '/mcp'
+    | '/oficio'
     | '/portafolio'
     | '/servicios'
     | '/.mcp/list-tools'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/login'
     | '/mcp'
+    | '/oficio'
     | '/portafolio'
     | '/servicios'
     | '/.mcp/list-tools'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/galeria'
     | '/login'
     | '/mcp'
+    | '/oficio'
     | '/portafolio'
     | '/servicios'
     | '/.mcp/list-tools'
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   GaleriaRoute: typeof GaleriaRoute
   LoginRoute: typeof LoginRoute
   McpRoute: typeof McpRoute
+  OficioRoute: typeof OficioRoute
   PortafolioRoute: typeof PortafolioRoute
   ServiciosRoute: typeof ServiciosRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
@@ -229,6 +242,13 @@ declare module '@tanstack/react-router' {
       path: '/portafolio'
       fullPath: '/portafolio'
       preLoaderRoute: typeof PortafolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oficio': {
+      id: '/oficio'
+      path: '/oficio'
+      fullPath: '/oficio'
+      preLoaderRoute: typeof OficioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   GaleriaRoute: GaleriaRoute,
   LoginRoute: LoginRoute,
   McpRoute: McpRoute,
+  OficioRoute: OficioRoute,
   PortafolioRoute: PortafolioRoute,
   ServiciosRoute: ServiciosRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,

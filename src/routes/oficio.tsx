@@ -1,4 +1,3 @@
-cat > /var/www/plannova/src/routes/oficio.tsx << 'ENDOFFILE'
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { FileText, FileSpreadsheet, Download, Loader2, CheckCircle, AlertCircle } from "lucide-react";
@@ -132,7 +131,7 @@ function OficioPage() {
             <p className="mt-1 text-sm text-muted-foreground">
               Revisa el documento antes de firmarlo.
             </p>
-            
+            <a
               href={urlDescarga}
               download="Oficio_Art59.docx"
               className="mt-4 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-foreground"
@@ -159,4 +158,3 @@ function OficioPage() {
     </section>
   );
 }
-ENDOFFILE

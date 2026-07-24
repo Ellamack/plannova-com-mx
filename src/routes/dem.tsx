@@ -272,7 +272,7 @@ function DemPage() {
             <p className="mt-2 font-medium text-foreground">
               {locale === "es" ? "Proceso completado" : "Process completed"}
             </p>
-            
+            <a
               href={urlDescarga}
               download="resultado_dem.zip"
               className="mt-4 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2 text-sm font-semibold text-accent-foreground"
