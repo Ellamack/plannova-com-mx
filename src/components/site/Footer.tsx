@@ -23,6 +23,14 @@ export function Footer() {
             <span className="font-display text-lg font-semibold">{site.name}</span>
           </div>
           <p className="mt-3 max-w-sm text-sm text-muted-foreground">{t("footer.madeWith")}</p>
+          <a 
+            href="https://ko-fi.com/plannova01"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1.5 text-xs font-medium text-yellow-600 transition-colors hover:bg-yellow-500/20 dark:text-yellow-400"
+          >
+            ☕ {t("nav.home") === "Home" ? "Buy me a coffee (USD)" : "Invítame un café (USD)"}
+          </a>
         </div>
         <nav className="flex flex-wrap gap-x-8 gap-y-2 md:justify-end">
           {links.map((l) => (
