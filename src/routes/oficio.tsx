@@ -139,6 +139,19 @@ function OficioPage() {
               <Download className="h-4 w-4" />
               Descargar Word
             </a>
+            <div className="mt-6 border-t border-border pt-4">
+              <p className="text-sm text-muted-foreground">
+                ¿Te ahorró tiempo? El servidor no se paga solo.
+              </p>
+              <a
+                href="https://ko-fi.com/plannova01"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-flex items-center gap-2 rounded-full bg-yellow-500/10 border border-yellow-500/30 px-4 py-2 text-sm font-medium text-yellow-600 dark:text-yellow-400 transition-colors hover:bg-yellow-500/20"
+              >
+                ☕ Invítame un café (USD)
+              </a>
+            </div>
           </div>
         )}
         {estado === "error" && (
