@@ -141,7 +141,7 @@ function OficioPage() {
             </a>
             <div className="mt-6 border-t border-border pt-4">
               <p className="text-sm text-muted-foreground">
-                ¿Te ahorró tiempo? El servidor no se paga solo.
+                ¿Te ahorró tiempo? Contribuye para mantener el servidor encendido.
               </p>
               <a
                 href="https://ko-fi.com/plannova01"
