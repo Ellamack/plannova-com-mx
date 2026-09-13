@@ -49,9 +49,14 @@ export function Footer() {
           <span>
             © {new Date().getFullYear()} {site.name}. {t("footer.rights")}
           </span>
-          <Link to="/admin" className="transition-colors hover:text-foreground">
-            {t("nav.home") === "Home" ? "Admin" : "Administración"}
-          </Link>
+          <div className="flex gap-4">
+            <Link to="/privacidad" className="transition-colors hover:text-foreground">
+              {t("nav.home") === "Home" ? "Privacy Policy" : "Privacidad"}
+            </Link>
+            <Link to="/admin" className="transition-colors hover:text-foreground">
+              {t("nav.home") === "Home" ? "Admin" : "Administración"}
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
