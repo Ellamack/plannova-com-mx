@@ -112,7 +112,7 @@ function DemPage() {
     // Crear nuevo control con solo la herramienta correcta
     const LDraw = L as any;
     const drawControl = new LDraw.Control.Draw({
-      edit: { featureGroup: drawnItems },
+      edit: false,
       draw: {
         polygon: modo === "mapa-poligono" ? { allowIntersection: false } : false,
         rectangle: modo === "mapa-rectangulo" ? {} : false,
