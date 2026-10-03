@@ -11,10 +11,7 @@ export const Route = createFileRoute("/dem")({
   head: () => ({
     meta: [
       { title: "Recorte DEM — Planispherium Nova" },
-      {
-        name: "description",
-        content: "Recorte DEM con curvas de nivel y derivados. Dibuja tu área en el mapa o sube tu archivo.",
-      },
+      { name: "description", content: "Recorte DEM con curvas de nivel y derivados. Dibuja tu área en el mapa o sube tu archivo." },
     ],
     links: [
       { rel: "canonical", href: "/dem" },
@@ -64,9 +61,14 @@ function DemPage() {
   const [estado, setEstado] = useState<Estado>("idle");
   const [mensajeError, setMensajeError] = useState("");
   const [urlDescarga, setUrlDescarga] = useState("");
+  const [mapaListo, setMapaListo] = useState(false);
+
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const drawnItemsRef = useRef<any>(null);
+  const drawControlRef = useRef<any>(null);
+  const LRef = useRef<any>(null);
+  const activeHandlerRef = useRef<any>(null);
 
   const checkCoverage = useCallback(async (gj: object) => {
     setEstado("verificando");
@@ -78,7 +80,6 @@ function DemPage() {
       });
       const data = await resp.json();
       setCoverage(data);
-      // Si solo hay WorldDEM disponible, seleccionar 5m automáticamente
       if (!data.cem_available) setPlan("5m");
       else setPlan("15m");
     } catch {
@@ -87,35 +88,29 @@ function DemPage() {
     setEstado("idle");
   }, []);
 
-  const initMap = useCallback(async (modo: ModoEntrada) => {
-    if (!mapRef.current) return;
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.remove();
-      mapInstanceRef.current = null;
-      drawnItemsRef.current = null;
+  // Activar herramienta de dibujo programáticamente
+  const activarHerramienta = useCallback((modo: ModoEntrada) => {
+    const map = mapInstanceRef.current;
+    const L = LRef.current;
+    const drawnItems = drawnItemsRef.current;
+    if (!map || !L || !drawnItems) return;
+
+    // Cancelar handler activo si existe
+    if (activeHandlerRef.current) {
+      try { activeHandlerRef.current.disable(); } catch {}
+      activeHandlerRef.current = null;
     }
 
-    const L = (await import("leaflet")).default;
-    await loadScript("/vendor/leaflet.draw.js");
+    // Quitar control anterior
+    if (drawControlRef.current) {
+      map.removeControl(drawControlRef.current);
+      drawControlRef.current = null;
+    }
 
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    });
+    if (modo === "archivo") return;
 
-    const map = L.map(mapRef.current, { center: [23.5, -102], zoom: 5 });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 18,
-    }).addTo(map);
-
-    const drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
-    drawnItemsRef.current = drawnItems;
-
-    const LDraw = (L as any);
+    // Crear nuevo control con solo la herramienta correcta
+    const LDraw = L as any;
     const drawControl = new LDraw.Control.Draw({
       edit: { featureGroup: drawnItems },
       draw: {
@@ -125,36 +120,103 @@ function DemPage() {
       },
     });
     map.addControl(drawControl);
+    drawControlRef.current = drawControl;
 
-    map.on(LDraw.Draw.Event.CREATED, (e: any) => {
-      drawnItems.clearLayers();
-      drawnItems.addLayer(e.layer);
-      const gj = drawnItems.toGeoJSON();
-      setGeojson(gj);
-      setCoverage(null);
-      checkCoverage(gj);
-    });
+    // Activar la herramienta automáticamente
+    setTimeout(() => {
+      const LDraw2 = L as any;
+      let handler: any;
+      if (modo === "mapa-poligono") {
+        handler = new LDraw2.Draw.Polygon(map, { allowIntersection: false });
+      } else if (modo === "mapa-rectangulo") {
+        handler = new LDraw2.Draw.Rectangle(map, {});
+      }
+      if (handler) {
+        handler.enable();
+        activeHandlerRef.current = handler;
+      }
+    }, 100);
+  }, []);
 
-    mapInstanceRef.current = map;
-  }, [checkCoverage]);
-
+  // Inicializar mapa UNA SOLA VEZ
   useEffect(() => {
-    if (modoEntrada === "archivo") return;
-    setGeojson(null);
-    setCoverage(null);
-    initMap(modoEntrada);
+    if (!mapRef.current || mapInstanceRef.current) return;
+
+    const init = async () => {
+      const L = (await import("leaflet")).default;
+      await loadScript("/vendor/leaflet.draw.js");
+      LRef.current = L;
+
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      });
+
+      const map = L.map(mapRef.current!, { center: [23.5, -102], zoom: 5 });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 18,
+      }).addTo(map);
+
+      const drawnItems = new L.FeatureGroup();
+      map.addLayer(drawnItems);
+      drawnItemsRef.current = drawnItems;
+      mapInstanceRef.current = map;
+
+      const LDraw = L as any;
+      map.on(LDraw.Draw.Event.CREATED, (e: any) => {
+        drawnItems.clearLayers();
+        drawnItems.addLayer(e.layer);
+        const gj = drawnItems.toGeoJSON();
+        setGeojson(gj);
+        setCoverage(null);
+        checkCoverage(gj);
+        // Re-activar herramienta para permitir redibujar
+        setModoEntrada(prev => { activarHerramienta(prev); return prev; });
+      });
+
+      setMapaListo(true);
+    };
+
+    init();
+
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
+        LRef.current = null;
+        drawnItemsRef.current = null;
+        drawControlRef.current = null;
+        activeHandlerRef.current = null;
+        setMapaListo(false);
       }
     };
-  }, [modoEntrada, initMap]);
+  }, [checkCoverage, activarHerramienta]);
+
+  // Cuando cambia el modo Y el mapa ya está listo: actualizar herramienta sin recrear mapa
+  useEffect(() => {
+    if (!mapaListo) return;
+    if (modoEntrada === "archivo") {
+      if (drawControlRef.current && mapInstanceRef.current) {
+        mapInstanceRef.current.removeControl(drawControlRef.current);
+        drawControlRef.current = null;
+      }
+      if (activeHandlerRef.current) {
+        try { activeHandlerRef.current.disable(); } catch {}
+        activeHandlerRef.current = null;
+      }
+      return;
+    }
+    activarHerramienta(modoEntrada);
+  }, [modoEntrada, mapaListo, activarHerramienta]);
 
   const limpiarMapa = () => {
     drawnItemsRef.current?.clearLayers();
     setGeojson(null);
     setCoverage(null);
+    activarHerramienta(modoEntrada);
   };
 
   const handleSubmit = async () => {
@@ -220,10 +282,9 @@ function DemPage() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-4">
-          {/* Modo entrada */}
           <div className="rounded-xl border border-border bg-card p-4">
             <p className="text-sm font-medium text-foreground mb-3">
-              {locale === "es" ? "¿Cómo defines tu área?" : "How do you define your area?"}
+              {locale === "es" ? "Herramienta de dibujo" : "Drawing tool"}
             </p>
             <div className="space-y-2">
               {[
@@ -255,7 +316,6 @@ function DemPage() {
             </div>
           )}
 
-          {/* Panel de cobertura y planes */}
           {estado === "verificando" && (
             <div className="rounded-xl border border-border bg-card p-4 text-center">
               <Loader2 className="mx-auto h-5 w-5 animate-spin text-accent mb-2" />
@@ -270,44 +330,23 @@ function DemPage() {
               <p className="text-sm font-medium text-foreground mb-3">
                 {locale === "es" ? "Planes disponibles" : "Available plans"}
               </p>
-
-              {/* Plan 15m */}
-              <button
-                onClick={() => setPlan("15m")}
-                disabled={!coverage.cem_available}
-                className={`w-full rounded-lg border p-3 text-left transition-colors mb-2 ${
-                  plan === "15m" && coverage.cem_available
-                    ? "border-accent bg-accent/10"
-                    : coverage.cem_available
-                    ? "border-border hover:border-accent/50"
-                    : "border-border opacity-40 cursor-not-allowed"
-                }`}
-              >
+              <button onClick={() => setPlan("15m")} disabled={!coverage.cem_available}
+                className={`w-full rounded-lg border p-3 text-left transition-colors mb-2 ${plan === "15m" && coverage.cem_available ? "border-accent bg-accent/10" : coverage.cem_available ? "border-border hover:border-accent/50" : "border-border opacity-40 cursor-not-allowed"}`}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                     <Zap className="h-3.5 w-3.5 text-accent" />
                     {locale === "es" ? "Resolución 15m" : "15m Resolution"}
                   </span>
-                  <span className="text-xs font-semibold text-green-500">
-                    {locale === "es" ? "Gratis" : "Free"}
-                  </span>
+                  <span className="text-xs font-semibold text-green-500">{locale === "es" ? "Gratis" : "Free"}</span>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {locale === "es" ? "CEM INEGI — Solo México" : "CEM INEGI — Mexico only"}
-                </p>
+                <p className="text-xs text-muted-foreground">{locale === "es" ? "CEM INEGI — Solo México" : "CEM INEGI — Mexico only"}</p>
                 {!coverage.cem_available && (
-                  <p className="text-xs text-red-400 mt-1">
-                    {locale === "es" ? "No disponible fuera de México" : "Not available outside Mexico"}
-                  </p>
+                  <p className="text-xs text-red-400 mt-1">{locale === "es" ? "No disponible fuera de México" : "Not available outside Mexico"}</p>
                 )}
               </button>
 
-              {/* Plan 5m */}
-              <button
-                onClick={() => setPlan("5m")}
-                disabled={true}
-                className="w-full rounded-lg border border-border p-3 text-left opacity-60 cursor-not-allowed"
-              >
+              <button disabled={true}
+                className="w-full rounded-lg border border-border p-3 text-left opacity-60 cursor-not-allowed">
                 <div className="flex items-center justify-between mb-1">
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                     <Star className="h-3.5 w-3.5 text-yellow-500" />
@@ -315,21 +354,14 @@ function DemPage() {
                   </span>
                   <span className="text-xs font-semibold text-yellow-500">Premium</span>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  WorldDEM Neo — {locale === "es" ? "Cobertura global" : "Global coverage"}
-                </p>
-                <p className="text-xs text-yellow-500 mt-1">
-                  {locale === "es" ? "Próximamente" : "Coming soon"}
-                </p>
+                <p className="text-xs text-muted-foreground">WorldDEM Neo — {locale === "es" ? "Cobertura global" : "Global coverage"}</p>
+                <p className="text-xs text-yellow-500 mt-1">{locale === "es" ? "Próximamente" : "Coming soon"}</p>
               </button>
             </div>
           )}
 
-          {/* Productos */}
           <div className="rounded-xl border border-border bg-card p-4">
-            <p className="text-sm font-medium text-foreground mb-3">
-              {locale === "es" ? "Productos" : "Products"}
-            </p>
+            <p className="text-sm font-medium text-foreground mb-3">{locale === "es" ? "Productos" : "Products"}</p>
             <div className="space-y-3">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={curvas} onChange={(e) => setCurvas(e.target.checked)} className="h-3.5 w-3.5 accent-accent" />
@@ -367,9 +399,7 @@ function DemPage() {
               </label>
             </div>
             <div className="mt-4 border-t border-border pt-3">
-              <p className="text-xs font-medium text-foreground mb-2">
-                {locale === "es" ? "Formato vectorial" : "Vector format"}
-              </p>
+              <p className="text-xs font-medium text-foreground mb-2">{locale === "es" ? "Formato vectorial" : "Vector format"}</p>
               <div className="flex gap-2">
                 {["shp", "kmz", "geojson"].map((fmt) => (
                   <button key={fmt} onClick={() => setFormatoVectorial(fmt)}
@@ -397,9 +427,7 @@ function DemPage() {
           {estado === "listo" && (
             <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center">
               <CheckCircle className="mx-auto h-6 w-6 text-green-500 mb-2" />
-              <p className="text-sm font-medium text-foreground mb-3">
-                {locale === "es" ? "Proceso completado" : "Process completed"}
-              </p>
+              <p className="text-sm font-medium text-foreground mb-3">{locale === "es" ? "Proceso completado" : "Process completed"}</p>
               <a href={urlDescarga} download="resultado_dem.zip"
                 className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground">
                 <Download className="h-3.5 w-3.5" />
@@ -427,13 +455,7 @@ function DemPage() {
         </div>
 
         <div className="lg:col-span-2">
-          {modoEntrada === "archivo" ? (
-            <div className="rounded-xl border border-border bg-card/50 h-96 flex items-center justify-center">
-              <p className="text-muted-foreground text-sm">
-                {locale === "es" ? "Sube tu archivo en el panel izquierdo" : "Upload your file on the left panel"}
-              </p>
-            </div>
-          ) : (
+          <div className={modoEntrada === "archivo" ? "hidden" : ""}>
             <div className="rounded-xl border border-border overflow-hidden relative">
               {geojson && (
                 <button onClick={limpiarMapa}
@@ -442,25 +464,3 @@ function DemPage() {
                   {locale === "es" ? "Limpiar" : "Clear"}
                 </button>
               )}
-              <div ref={mapRef} className="h-[500px] w-full" />
-              {!geojson && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] rounded-lg bg-background/90 backdrop-blur px-3 py-2 text-xs text-muted-foreground border border-border pointer-events-none">
-                  {modoEntrada === "mapa-poligono"
-                    ? (locale === "es" ? "Usa la herramienta ✏️ para dibujar tu polígono" : "Use the ✏️ tool to draw your polygon")
-                    : (locale === "es" ? "Usa la herramienta ⬜ para trazar tu rectángulo" : "Use the ⬜ tool to draw your rectangle")}
-                </div>
-              )}
-            </div>
-          )}
-          {coverage && (
-            <p className={`mt-2 text-xs text-center ${coverage.in_mexico ? "text-green-500" : "text-yellow-500"}`}>
-              {coverage.in_mexico
-                ? (locale === "es" ? `✓ Área en México (${coverage.coverage_pct}% cobertura CEM)` : `✓ Area in Mexico (${coverage.coverage_pct}% CEM coverage)`)
-                : (locale === "es" ? "⚠ Área fuera de México — solo disponible WorldDEM 5m premium" : "⚠ Area outside Mexico — only WorldDEM 5m premium available")}
-            </p>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
