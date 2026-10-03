@@ -463,4 +463,8 @@ function DemPage() {
                   <Trash2 className="h-3 w-3" />
                   {locale === "es" ? "Limpiar" : "Clear"}
                 </button>
-              )}
+            )}
+      </div>
+    </section>
+  );
+}
