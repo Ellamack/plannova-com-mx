@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Globe, Upload, Square, PenLine, Trash2, Loader2, Download, CheckCircle, AlertCircle, ChevronDown } from "lucide-react";
+import {
+  Globe, Upload, Square, PenLine, Trash2,
+  Loader2, Download, CheckCircle, AlertCircle,
+} from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
 export const Route = createFileRoute("/dem")({
@@ -9,12 +12,20 @@ export const Route = createFileRoute("/dem")({
       { title: "Recorte DEM — Planispherium Nova" },
       {
         name: "description",
-        content: "Recorte DEM con curvas de nivel y derivados. Dibuja tu área en el mapa o sube tu archivo.",
+        content:
+          "Recorte DEM con curvas de nivel y derivados. Dibuja tu área en el mapa o sube tu archivo.",
       },
     ],
     links: [
       { rel: "canonical", href: "/dem" },
-      { rel: "stylesheet", href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" },
+      {
+        rel: "stylesheet",
+        href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css",
+      },
     ],
   }),
   component: DemPage,
@@ -41,80 +52,77 @@ function DemPage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const drawnItemsRef = useRef<any>(null);
+  const drawControlRef = useRef<any>(null);
+
+  const initMap = async (modo: ModoEntrada) => {
+    if (!mapRef.current) return;
+
+    // Destruir mapa previo si existe
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+      drawnItemsRef.current = null;
+      drawControlRef.current = null;
+    }
+
+    const L = (await import("leaflet")).default;
+    await import("leaflet-draw");
+
+    // Fix iconos
+    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl:
+        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+      iconUrl:
+        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+      shadowUrl:
+        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    });
+
+    const map = L.map(mapRef.current, {
+      center: [23.5, -102],
+      zoom: 5,
+    });
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution:
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 18,
+    }).addTo(map);
+
+    const drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+    drawnItemsRef.current = drawnItems;
+
+    const drawOptions: any = {
+      edit: { featureGroup: drawnItems },
+      draw: {
+        polygon: modo === "mapa-poligono" ? { allowIntersection: false } : false,
+        rectangle: modo === "mapa-rectangulo" ? {} : false,
+        polyline: false,
+        circle: false,
+        circlemarker: false,
+        marker: false,
+      },
+    };
+
+    const drawControl = new (L.Control as any).Draw(drawOptions);
+    map.addControl(drawControl);
+    drawControlRef.current = drawControl;
+
+    map.on((L as any).Draw.Event.CREATED, (e: any) => {
+      drawnItems.clearLayers();
+      drawnItems.addLayer(e.layer);
+      setGeojson(drawnItems.toGeoJSON());
+    });
+
+    mapInstanceRef.current = map;
+  };
 
   useEffect(() => {
     if (modoEntrada === "archivo") return;
-    if (!mapRef.current) return;
-    if (mapInstanceRef.current) return;
-
-    // Carga dinámica de Leaflet
-    const initMap = async () => {
-      const L = (await import("leaflet")).default;
-      
-      // Fix icono por defecto de Leaflet
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      });
-
-      const map = L.map(mapRef.current!, {
-        center: [23.5, -102],
-        zoom: 5,
-        zoomControl: true,
-      });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 18,
-      }).addTo(map);
-
-      const drawnItems = new L.FeatureGroup();
-      map.addLayer(drawnItems);
-      drawnItemsRef.current = drawnItems;
-      mapInstanceRef.current = map;
-
-      // Herramienta de dibujo
-      if (modoEntrada === "mapa-poligono") {
-        map.on("click", (e: any) => {
-          // modo polígono — se maneja con el toolbar
-        });
-      }
-
-      // Leaflet.draw para polígono y rectángulo
-      const script = document.createElement("script");
-      script.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.min.js";
-      script.onload = () => {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css";
-        document.head.appendChild(link);
-
-        const drawControl = new (window as any).L.Control.Draw({
-          edit: { featureGroup: drawnItems },
-          draw: {
-            polygon: modoEntrada === "mapa-poligono" ? {} : false,
-            rectangle: modoEntrada === "mapa-rectangulo" ? {} : false,
-            polyline: false,
-            circle: false,
-            circlemarker: false,
-            marker: false,
-          },
-        });
-        map.addControl(drawControl);
-
-        map.on((window as any).L.Draw.Event.CREATED, (e: any) => {
-          drawnItems.clearLayers();
-          drawnItems.addLayer(e.layer);
-          const gj = drawnItems.toGeoJSON();
-          setGeojson(gj);
-        });
-      };
-      document.head.appendChild(script);
-    };
-
-    initMap();
+    setGeojson(null);
+    initMap(modoEntrada);
 
     return () => {
       if (mapInstanceRef.current) {
@@ -125,15 +133,17 @@ function DemPage() {
   }, [modoEntrada]);
 
   const limpiarMapa = () => {
-    if (drawnItemsRef.current) {
-      drawnItemsRef.current.clearLayers();
-    }
+    drawnItemsRef.current?.clearLayers();
     setGeojson(null);
   };
 
   const handleSubmit = async () => {
     if (!geojson && !archivo) {
-      setMensajeError(locale === "es" ? "Dibuja o sube un área primero." : "Draw or upload an area first.");
+      setMensajeError(
+        locale === "es"
+          ? "Dibuja o sube un área primero."
+          : "Draw or upload an area first."
+      );
       setEstado("error");
       return;
     }
@@ -141,14 +151,14 @@ function DemPage() {
     setMensajeError("");
 
     const formData = new FormData();
-    
     if (geojson) {
-      const blob = new Blob([JSON.stringify(geojson)], { type: "application/geo+json" });
+      const blob = new Blob([JSON.stringify(geojson)], {
+        type: "application/geo+json",
+      });
       formData.append("archivo", blob, "area.geojson");
     } else if (archivo) {
       formData.append("archivo", archivo);
     }
-
     formData.append("curvas", String(curvas));
     formData.append("equidistancia", equidistancia || "100");
     formData.append("hillshade", String(hillshade));
@@ -158,10 +168,10 @@ function DemPage() {
     formData.append("formato_vectorial", formatoVectorial);
 
     try {
-      const response = await fetch("https://plannova.com.mx/api/dem/procesar", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://plannova.com.mx/api/dem/procesar",
+        { method: "POST", body: formData }
+      );
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.error || err.detail || "Error en el servidor.");
@@ -184,7 +194,9 @@ function DemPage() {
           {locale === "es" ? "Cobertura México" : "Mexico coverage"}
         </div>
         <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          {locale === "es" ? "Recorte DEM con curvas de nivel y derivados" : "DEM clip with contour lines and derivatives"}
+          {locale === "es"
+            ? "Recorte DEM con curvas de nivel y derivados"
+            : "DEM clip with contour lines and derivatives"}
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
           {locale === "es"
@@ -194,9 +206,9 @@ function DemPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Panel izquierdo — opciones */}
+        {/* Panel izquierdo */}
         <div className="space-y-4">
-          {/* Modo de entrada */}
+          {/* Modo entrada */}
           <div className="rounded-xl border border-border bg-card p-4">
             <p className="text-sm font-medium text-foreground mb-3">
               {locale === "es" ? "¿Cómo defines tu área?" : "How do you define your area?"}
@@ -209,7 +221,11 @@ function DemPage() {
               ].map(({ id, icon: Icon, label }) => (
                 <button
                   key={id}
-                  onClick={() => { setModoEntrada(id as ModoEntrada); setGeojson(null); setArchivo(null); }}
+                  onClick={() => {
+                    setModoEntrada(id as ModoEntrada);
+                    setGeojson(null);
+                    setArchivo(null);
+                  }}
                   className={`w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
                     modoEntrada === id
                       ? "bg-accent text-accent-foreground"
@@ -223,7 +239,7 @@ function DemPage() {
             </div>
           </div>
 
-          {/* Subir archivo (solo cuando el modo es archivo) */}
+          {/* Subir archivo */}
           {modoEntrada === "archivo" && (
             <div className="rounded-xl border border-border bg-card p-4">
               <label className="flex flex-col items-center gap-2 cursor-pointer text-center">
@@ -371,13 +387,12 @@ function DemPage() {
               {!geojson && (
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] rounded-lg bg-background/90 backdrop-blur px-3 py-2 text-xs text-muted-foreground border border-border pointer-events-none">
                   {modoEntrada === "mapa-poligono"
-                    ? (locale === "es" ? "Usa la herramienta de polígono para dibujar tu área" : "Use the polygon tool to draw your area")
-                    : (locale === "es" ? "Usa la herramienta de rectángulo para seleccionar tu área" : "Use the rectangle tool to select your area")}
+                    ? (locale === "es" ? "Usa la herramienta ✏️ para dibujar tu polígono" : "Use the ✏️ tool to draw your polygon")
+                    : (locale === "es" ? "Usa la herramienta ⬜ para trazar tu rectángulo" : "Use the ⬜ tool to draw your rectangle")}
                 </div>
               )}
             </div>
           )}
-          
           {geojson && (
             <p className="mt-2 text-xs text-green-500 text-center">
               ✓ {locale === "es" ? "Área definida — listo para procesar" : "Area defined — ready to process"}
