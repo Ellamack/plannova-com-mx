@@ -457,13 +457,42 @@ function DemPage() {
         <div className="lg:col-span-2">
           <div className={modoEntrada === "archivo" ? "hidden" : ""}>
             <div className="rounded-xl border border-border overflow-hidden relative">
-              {geojson && (
+                            {geojson && (
                 <button onClick={limpiarMapa}
                   className="absolute top-3 right-3 z-[1000] flex items-center gap-1 rounded-lg bg-background/90 backdrop-blur px-2 py-1 text-xs text-muted-foreground hover:text-foreground border border-border">
                   <Trash2 className="h-3 w-3" />
                   {locale === "es" ? "Limpiar" : "Clear"}
                 </button>
+              )}
+              <div ref={mapRef} className="h-[500px] w-full" />
+              {!geojson && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] rounded-lg bg-background/90 backdrop-blur px-3 py-2 text-xs text-muted-foreground border border-border pointer-events-none">
+                  {modoEntrada === "mapa-poligono"
+                    ? (locale === "es" ? "Haz clic en el mapa para dibujar tu polígono" : "Click on the map to draw your polygon")
+                    : (locale === "es" ? "Haz clic y arrastra para trazar tu rectángulo" : "Click and drag to draw your rectangle")}
+                </div>
+              )}
+            </div>
+            {coverage && (
+              <p className={`mt-2 text-xs text-center ${coverage.in_mexico ? "text-green-500" : "text-yellow-500"}`}>
+                {coverage.in_mexico
+                  ? (locale === "es" ? `✓ Área en México (${coverage.coverage_pct}% cobertura CEM)` : `✓ Area in Mexico (${coverage.coverage_pct}% CEM coverage)`)
+                  : (locale === "es" ? "⚠ Área fuera de México — solo disponible WorldDEM 5m premium" : "⚠ Area outside Mexico — only WorldDEM 5m premium available")}
+              </p>
             )}
+          </div>
+
+          {modoEntrada === "archivo" && (
+            <div className="rounded-xl border border-border bg-card/50 h-96 flex items-center justify-center">
+              <div className="text-center space-y-3">
+                <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
+                <p className="text-muted-foreground text-sm">
+                  {locale === "es" ? "Sube tu archivo en el panel izquierdo" : "Upload your file on the left panel"}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
