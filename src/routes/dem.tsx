@@ -18,7 +18,7 @@ export const Route = createFileRoute("/dem")({
     links: [
       { rel: "canonical", href: "/dem" },
       { rel: "stylesheet", href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" },
-      { rel: "stylesheet", href: "/vendor/leaflet.draw.js" },
+      { rel: "stylesheet", href: "/vendor/leaflet.draw.css" },
     ],
   }),
   component: DemPage,
@@ -73,7 +73,7 @@ function DemPage() {
 
     // Cargar Leaflet y leaflet.draw en orden
     const L = (await import("leaflet")).default;
-    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.min.js");
+    await loadScript("/vendor/leaflet.draw.js");
 
     // Fix iconos
     delete (L.Icon.Default.prototype as any)._getIconUrl;
