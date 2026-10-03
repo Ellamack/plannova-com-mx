@@ -18,7 +18,7 @@ export const Route = createFileRoute("/dem")({
     links: [
       { rel: "canonical", href: "/dem" },
       { rel: "stylesheet", href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" },
-      { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" },
+      { rel: "stylesheet", href: "/vendor/leaflet.draw.js" },
     ],
   }),
   component: DemPage,
