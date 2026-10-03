@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Globe, Upload, Square, PenLine, Trash2,
@@ -12,20 +12,13 @@ export const Route = createFileRoute("/dem")({
       { title: "Recorte DEM — Planispherium Nova" },
       {
         name: "description",
-        content:
-          "Recorte DEM con curvas de nivel y derivados. Dibuja tu área en el mapa o sube tu archivo.",
+        content: "Recorte DEM con curvas de nivel y derivados. Dibuja tu área en el mapa o sube tu archivo.",
       },
     ],
     links: [
       { rel: "canonical", href: "/dem" },
-      {
-        rel: "stylesheet",
-        href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css",
-      },
+      { rel: "stylesheet", href: "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" },
+      { rel: "stylesheet", href: "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" },
     ],
   }),
   component: DemPage,
@@ -33,6 +26,21 @@ export const Route = createFileRoute("/dem")({
 
 type ModoEntrada = "mapa-poligono" | "mapa-rectangulo" | "archivo";
 type Estado = "idle" | "procesando" | "listo" | "error";
+
+// Carga un script externo una sola vez y devuelve una Promise
+function loadScript(src: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load ${src}`));
+    document.head.appendChild(script);
+  });
+}
 
 function DemPage() {
   const { locale } = useLanguage();
@@ -52,41 +60,33 @@ function DemPage() {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const drawnItemsRef = useRef<any>(null);
-  const drawControlRef = useRef<any>(null);
 
-  const initMap = async (modo: ModoEntrada) => {
+  const initMap = useCallback(async (modo: ModoEntrada) => {
     if (!mapRef.current) return;
 
-    // Destruir mapa previo si existe
+    // Destruir mapa previo
     if (mapInstanceRef.current) {
       mapInstanceRef.current.remove();
       mapInstanceRef.current = null;
       drawnItemsRef.current = null;
-      drawControlRef.current = null;
     }
 
+    // Cargar Leaflet y leaflet.draw en orden
     const L = (await import("leaflet")).default;
-    await import("leaflet-draw");
+    await loadScript("https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.min.js");
 
     // Fix iconos
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
-      iconRetinaUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-      iconUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-      shadowUrl:
-        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+      iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
     });
 
-    const map = L.map(mapRef.current, {
-      center: [23.5, -102],
-      zoom: 5,
-    });
+    const map = L.map(mapRef.current, { center: [23.5, -102], zoom: 5 });
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       maxZoom: 18,
     }).addTo(map);
 
@@ -94,7 +94,9 @@ function DemPage() {
     map.addLayer(drawnItems);
     drawnItemsRef.current = drawnItems;
 
-    const drawOptions: any = {
+    // leaflet.draw añade L.Control.Draw al objeto L global
+    const LDraw = (L as any);
+    const drawControl = new LDraw.Control.Draw({
       edit: { featureGroup: drawnItems },
       draw: {
         polygon: modo === "mapa-poligono" ? { allowIntersection: false } : false,
@@ -104,33 +106,29 @@ function DemPage() {
         circlemarker: false,
         marker: false,
       },
-    };
-
-    const drawControl = new (L.Control as any).Draw(drawOptions);
+    });
     map.addControl(drawControl);
-    drawControlRef.current = drawControl;
 
-    map.on((L as any).Draw.Event.CREATED, (e: any) => {
+    map.on(LDraw.Draw.Event.CREATED, (e: any) => {
       drawnItems.clearLayers();
       drawnItems.addLayer(e.layer);
       setGeojson(drawnItems.toGeoJSON());
     });
 
     mapInstanceRef.current = map;
-  };
+  }, []);
 
   useEffect(() => {
     if (modoEntrada === "archivo") return;
     setGeojson(null);
     initMap(modoEntrada);
-
     return () => {
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
-  }, [modoEntrada]);
+  }, [modoEntrada, initMap]);
 
   const limpiarMapa = () => {
     drawnItemsRef.current?.clearLayers();
@@ -139,11 +137,7 @@ function DemPage() {
 
   const handleSubmit = async () => {
     if (!geojson && !archivo) {
-      setMensajeError(
-        locale === "es"
-          ? "Dibuja o sube un área primero."
-          : "Draw or upload an area first."
-      );
+      setMensajeError(locale === "es" ? "Dibuja o sube un área primero." : "Draw or upload an area first.");
       setEstado("error");
       return;
     }
@@ -152,9 +146,7 @@ function DemPage() {
 
     const formData = new FormData();
     if (geojson) {
-      const blob = new Blob([JSON.stringify(geojson)], {
-        type: "application/geo+json",
-      });
+      const blob = new Blob([JSON.stringify(geojson)], { type: "application/geo+json" });
       formData.append("archivo", blob, "area.geojson");
     } else if (archivo) {
       formData.append("archivo", archivo);
@@ -168,10 +160,10 @@ function DemPage() {
     formData.append("formato_vectorial", formatoVectorial);
 
     try {
-      const response = await fetch(
-        "https://plannova.com.mx/api/dem/procesar",
-        { method: "POST", body: formData }
-      );
+      const response = await fetch("https://plannova.com.mx/api/dem/procesar", {
+        method: "POST",
+        body: formData,
+      });
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.error || err.detail || "Error en el servidor.");
@@ -187,16 +179,13 @@ function DemPage() {
 
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-      {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">
           <Globe className="h-3.5 w-3.5 text-accent" />
           {locale === "es" ? "Cobertura México" : "Mexico coverage"}
         </div>
         <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          {locale === "es"
-            ? "Recorte DEM con curvas de nivel y derivados"
-            : "DEM clip with contour lines and derivatives"}
+          {locale === "es" ? "Recorte DEM con curvas de nivel y derivados" : "DEM clip with contour lines and derivatives"}
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
           {locale === "es"
@@ -206,9 +195,7 @@ function DemPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Panel izquierdo */}
         <div className="space-y-4">
-          {/* Modo entrada */}
           <div className="rounded-xl border border-border bg-card p-4">
             <p className="text-sm font-medium text-foreground mb-3">
               {locale === "es" ? "¿Cómo defines tu área?" : "How do you define your area?"}
@@ -221,11 +208,7 @@ function DemPage() {
               ].map(({ id, icon: Icon, label }) => (
                 <button
                   key={id}
-                  onClick={() => {
-                    setModoEntrada(id as ModoEntrada);
-                    setGeojson(null);
-                    setArchivo(null);
-                  }}
+                  onClick={() => { setModoEntrada(id as ModoEntrada); setGeojson(null); setArchivo(null); }}
                   className={`w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
                     modoEntrada === id
                       ? "bg-accent text-accent-foreground"
@@ -239,7 +222,6 @@ function DemPage() {
             </div>
           </div>
 
-          {/* Subir archivo */}
           {modoEntrada === "archivo" && (
             <div className="rounded-xl border border-border bg-card p-4">
               <label className="flex flex-col items-center gap-2 cursor-pointer text-center">
@@ -248,17 +230,12 @@ function DemPage() {
                   {archivo ? archivo.name : locale === "es" ? "Seleccionar archivo" : "Select file"}
                 </span>
                 <span className="text-xs text-muted-foreground">SHP·ZIP, KML, KMZ, GeoJSON</span>
-                <input
-                  type="file"
-                  accept=".zip,.kml,.kmz,.geojson"
-                  className="hidden"
-                  onChange={(e) => setArchivo(e.target.files?.[0] ?? null)}
-                />
+                <input type="file" accept=".zip,.kml,.kmz,.geojson" className="hidden"
+                  onChange={(e) => setArchivo(e.target.files?.[0] ?? null)} />
               </label>
             </div>
           )}
 
-          {/* Productos */}
           <div className="rounded-xl border border-border bg-card p-4">
             <p className="text-sm font-medium text-foreground mb-3">
               {locale === "es" ? "Productos" : "Products"}
@@ -271,11 +248,9 @@ function DemPage() {
               {curvas && (
                 <div className="ml-5 flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">{locale === "es" ? "Equidistancia (m):" : "Interval (m):"}</span>
-                  <input
-                    type="number" min={1} max={10000} value={equidistancia}
+                  <input type="number" min={1} max={10000} value={equidistancia}
                     onChange={(e) => setEquidistancia(e.target.value)}
-                    className="w-20 rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground"
-                  />
+                    className="w-20 rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground" />
                 </div>
               )}
               <label className="flex items-center gap-2 cursor-pointer">
@@ -301,7 +276,6 @@ function DemPage() {
                 <span className="text-sm text-foreground">Aspect</span>
               </label>
             </div>
-
             <div className="mt-4 border-t border-border pt-3">
               <p className="text-xs font-medium text-foreground mb-2">
                 {locale === "es" ? "Formato vectorial" : "Vector format"}
@@ -317,12 +291,9 @@ function DemPage() {
             </div>
           </div>
 
-          {/* Botón procesar */}
-          <button
-            onClick={handleSubmit}
+          <button onClick={handleSubmit}
             disabled={estado === "procesando" || (!geojson && !archivo)}
-            className="w-full rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50"
-          >
+            className="w-full rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50">
             {estado === "procesando" ? (
               <span className="flex items-center justify-center gap-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -331,7 +302,6 @@ function DemPage() {
             ) : locale === "es" ? "Procesar área" : "Process area"}
           </button>
 
-          {/* Resultado */}
           {estado === "listo" && (
             <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center">
               <CheckCircle className="mx-auto h-6 w-6 text-green-500 mb-2" />
@@ -364,7 +334,6 @@ function DemPage() {
           )}
         </div>
 
-        {/* Panel derecho — mapa */}
         <div className="lg:col-span-2">
           {modoEntrada === "archivo" ? (
             <div className="rounded-xl border border-border bg-card/50 h-96 flex items-center justify-center">
@@ -375,10 +344,8 @@ function DemPage() {
           ) : (
             <div className="rounded-xl border border-border overflow-hidden relative">
               {geojson && (
-                <button
-                  onClick={limpiarMapa}
-                  className="absolute top-3 right-3 z-[1000] flex items-center gap-1 rounded-lg bg-background/90 backdrop-blur px-2 py-1 text-xs text-muted-foreground hover:text-foreground border border-border"
-                >
+                <button onClick={limpiarMapa}
+                  className="absolute top-3 right-3 z-[1000] flex items-center gap-1 rounded-lg bg-background/90 backdrop-blur px-2 py-1 text-xs text-muted-foreground hover:text-foreground border border-border">
                   <Trash2 className="h-3 w-3" />
                   {locale === "es" ? "Limpiar" : "Clear"}
                 </button>
