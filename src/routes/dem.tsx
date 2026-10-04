@@ -358,7 +358,7 @@ const sessionId = params.get("session_id");
               <p className="text-sm font-medium text-foreground mb-3">
                 {locale === "es" ? "Planes disponibles" : "Available plans"}
               </p>
-              onClick={handleSubmit} disabled={!coverage.cem_available || !geojson || estado === "procesando"}
+              <button onClick={handleSubmit} disabled={!coverage.cem_available || !geojson || estado === "procesando"}
                 className={`w-full rounded-lg border p-3 text-left transition-colors mb-2 ${!coverage.cem_available ? "border-border opacity-40 cursor-not-allowed" : "border-accent bg-accent/10 hover:bg-accent/20 cursor-pointer"}`}
                 <div className="flex items-center justify-between mb-1">
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
