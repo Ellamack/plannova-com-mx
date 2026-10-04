@@ -226,10 +226,10 @@ function DemPage() {
       return;
     }
     if (plan === "5m") {
-      setMensajeError(locale === "es" ? "El servicio premium estará disponible próximamente." : "Premium service coming soon.");
-      setEstado("error");
-      return;
-    }
+  setMensajeError(locale === "es" ? "El servicio premium estará disponible próximamente." : "Premium service coming soon.");
+  setEstado("error");
+  return;
+ }
     setEstado("procesando");
     setMensajeError("");
 
@@ -345,8 +345,24 @@ function DemPage() {
                 )}
               </button>
 
-              <button disabled={true}
-                className="w-full rounded-lg border border-border p-3 text-left opacity-60 cursor-not-allowed">
+              <button onClick={async () => {
+  if (!geojson) return;
+  setEstado("procesando");
+  try {
+    const resp = await fetch("https://plannova.com.mx/api/dem/crear-pago", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(geojson),
+    });
+    const data = await resp.json();
+    if (data.url) window.location.href = data.url;
+  } catch {
+    setMensajeError("Error al crear sesión de pago.");
+    setEstado("error");
+  }
+}}
+disabled={!geojson}
+className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson ? "border-border opacity-40 cursor-not-allowed" : "border-yellow-500/50 hover:border-yellow-500 cursor-pointer"}`}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                     <Star className="h-3.5 w-3.5 text-yellow-500" />
@@ -355,8 +371,7 @@ function DemPage() {
                   <span className="text-xs font-semibold text-yellow-500">Premium</span>
                 </div>
                 <p className="text-xs text-muted-foreground">WorldDEM Neo — {locale === "es" ? "Cobertura global" : "Global coverage"}</p>
-                <p className="text-xs text-yellow-500 mt-1">{locale === "es" ? "Próximamente" : "Coming soon"}</p>
-              </button>
+                </button>
             </div>
           )}
 
@@ -419,9 +434,7 @@ function DemPage() {
                 <Loader2 className="h-4 w-4 animate-spin" />
                 {locale === "es" ? "Procesando..." : "Processing..."}
               </span>
-            ) : plan === "5m"
-              ? (locale === "es" ? "Próximamente" : "Coming soon")
-              : (locale === "es" ? "Procesar área" : "Process area")}
+                     ) : (locale === "es" ? "Procesar área" : "Process area")}
           </button>
 
           {estado === "listo" && (
