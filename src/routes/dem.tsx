@@ -358,8 +358,8 @@ const sessionId = params.get("session_id");
               <p className="text-sm font-medium text-foreground mb-3">
                 {locale === "es" ? "Planes disponibles" : "Available plans"}
               </p>
-              <button onClick={() => setPlan("15m")} disabled={!coverage.cem_available}
-                className={`w-full rounded-lg border p-3 text-left transition-colors mb-2 ${plan === "15m" && coverage.cem_available ? "border-accent bg-accent/10" : coverage.cem_available ? "border-border hover:border-accent/50" : "border-border opacity-40 cursor-not-allowed"}`}>
+              onClick={handleSubmit} disabled={!coverage.cem_available || !geojson || estado === "procesando"}
+                className={`w-full rounded-lg border p-3 text-left transition-colors mb-2 ${!coverage.cem_available ? "border-border opacity-40 cursor-not-allowed" : "border-accent bg-accent/10 hover:bg-accent/20 cursor-pointer"}`}
                 <div className="flex items-center justify-between mb-1">
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                     <Zap className="h-3.5 w-3.5 text-accent" />
@@ -454,16 +454,7 @@ className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson 
             </div>
           </div>
 
-          <button onClick={handleSubmit}
-            disabled={estado === "procesando" || estado === "verificando" || (!geojson && !archivo)}
-            className="w-full rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground shadow-lg shadow-accent/20 transition-transform hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50">
-            {estado === "procesando" ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                {locale === "es" ? "Procesando..." : "Processing..."}
-              </span>
-                     ) : (locale === "es" ? "Procesar área" : "Process area")}
-          </button>
+          
 
           {estado === "listo" && (
             <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center">
