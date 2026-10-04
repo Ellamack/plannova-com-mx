@@ -63,6 +63,9 @@ function DemPage() {
   const [urlDescarga, setUrlDescarga] = useState("");
   const [mapaListo, setMapaListo] = useState(false);
 
+  const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+const pagoStatus = params.get("pago");
+const sessionId = params.get("session_id");
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const drawnItemsRef = useRef<any>(null);
@@ -265,6 +268,31 @@ function DemPage() {
 
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
+            {pagoStatus === "exitoso" && sessionId && (
+        <div className="mb-6 rounded-xl border border-green-500/30 bg-green-500/10 p-6 text-center">
+          <CheckCircle className="mx-auto h-8 w-8 text-green-500 mb-3" />
+          <p className="text-lg font-semibold text-foreground mb-2">
+            {locale === "es" ? "¡Pago exitoso!" : "Payment successful!"}
+          </p>
+          <p className="text-sm text-muted-foreground mb-4">
+            {locale === "es" ? "Tu DEM 5m está siendo procesado." : "Your 5m DEM is being processed."}
+          </p>
+          <a href={`https://plannova.com.mx/api/dem/resultado/${sessionId}`}
+            className="inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-foreground">
+            <Download className="h-4 w-4" />
+            {locale === "es" ? "Descargar DEM 5m" : "Download 5m DEM"}
+          </a>
+        </div>
+      )}
+
+      {pagoStatus === "cancelado" && (
+        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center">
+          <AlertCircle className="mx-auto h-6 w-6 text-red-500 mb-2" />
+          <p className="text-sm text-muted-foreground">
+            {locale === "es" ? "Pago cancelado. Puedes intentarlo de nuevo." : "Payment cancelled. You can try again."}
+          </p>
+        </div>
+      )}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">
           <Globe className="h-3.5 w-3.5 text-accent" />
