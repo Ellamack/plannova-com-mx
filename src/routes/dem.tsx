@@ -160,11 +160,7 @@ const sessionId = params.get("session_id");
       const map = L.map(mapRef.current!, { center: [23.5, -102], zoom: 5 });
 
       // Proveedores de tiles en orden de preferencia
-      const tileProviders = [
-        {
-          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        },
+            const tileProviders = [
         {
           url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
           attribution: '© <a href="https://www.esri.com">Esri</a>',
@@ -172,6 +168,10 @@ const sessionId = params.get("session_id");
         {
           url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
           attribution: '© <a href="https://carto.com">CartoDB</a>',
+        },
+        {
+          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         },
       ];
 
