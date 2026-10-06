@@ -158,10 +158,45 @@ const sessionId = params.get("session_id");
       });
 
       const map = L.map(mapRef.current!, { center: [23.5, -102], zoom: 5 });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 18,
-      }).addTo(map);
+
+      // Proveedores de tiles en orden de preferencia
+      const tileProviders = [
+        {
+          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        },
+        {
+          url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+          attribution: '© <a href="https://www.esri.com">Esri</a>',
+        },
+        {
+          url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+          attribution: '© <a href="https://carto.com">CartoDB</a>',
+        },
+      ];
+
+      let tileLayerActual: any = null;
+      let providerIndex = 0;
+
+      const cargarTiles = (index: number) => {
+        if (index >= tileProviders.length) return;
+        const provider = tileProviders[index];
+        const layer = L.tileLayer(provider.url, {
+          attribution: provider.attribution,
+          maxZoom: 18,
+        });
+        layer.on("tileerror", () => {
+          if (providerIndex === index) {
+            providerIndex = index + 1;
+            map.removeLayer(layer);
+            cargarTiles(providerIndex);
+          }
+        });
+        layer.addTo(map);
+        tileLayerActual = layer;
+      };
+
+      cargarTiles(0);
 
       const drawnItems = new L.FeatureGroup();
       map.addLayer(drawnItems);
