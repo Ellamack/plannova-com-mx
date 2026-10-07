@@ -362,6 +362,7 @@ if (drawControlRef.current) {
             </p>
             <div className="space-y-2">
               {[
+                { id: "navegar", icon: Hand, label: locale === "es" ? "Navegar" : "Pan" },
                 { id: "mapa-poligono", icon: PenLine, label: locale === "es" ? "Dibujar polígono" : "Draw polygon" },
                 { id: "mapa-rectangulo", icon: Square, label: locale === "es" ? "Trazar rectángulo" : "Draw rectangle" },
                 { id: "archivo", icon: Upload, label: locale === "es" ? "Subir archivo" : "Upload file" },
