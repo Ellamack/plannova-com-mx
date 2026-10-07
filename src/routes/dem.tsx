@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Globe, Upload, Square, PenLine, Trash2,
   Loader2, Download, CheckCircle, AlertCircle,
-  Zap, Star,
+  Zap, Star, Hand,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/dem")({
   component: DemPage,
 });
 
-type ModoEntrada = "mapa-poligono" | "mapa-rectangulo" | "archivo";
+type ModoEntrada = "navegar" | "mapa-poligono" | "mapa-rectangulo" | "archivo";
 type Estado = "idle" | "verificando" | "procesando" | "listo" | "error";
 type ResolucionPlan = "15m" | "5m";
 
@@ -46,7 +46,7 @@ function loadScript(src: string): Promise<void> {
 
 function DemPage() {
   const { locale } = useLanguage();
-  const [modoEntrada, setModoEntrada] = useState<ModoEntrada>("mapa-poligono");
+  const [modoEntrada, setModoEntrada] = useState<ModoEntrada>("navegar");
   const [archivo, setArchivo] = useState<File | null>(null);
   const [geojson, setGeojson] = useState<object | null>(null);
   const [coverage, setCoverage] = useState<Coverage | null>(null);
@@ -111,7 +111,14 @@ const sessionId = params.get("session_id");
     }
 
     if (modo === "archivo") return;
-
+            if (modo === "navegar") {
+      if (activeHandlerRef.current) {
+        try { activeHandlerRef.current.disable(); } catch {}
+        activeHandlerRef.current = null;
+      }
+      map.dragging.enable();
+      return;
+    }
     // Crear nuevo control con solo la herramienta correcta
     const LDraw = L as any;
     const drawControl = new LDraw.Control.Draw({
@@ -157,7 +164,8 @@ const sessionId = params.get("session_id");
         shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
 
-      const map = L.map(mapRef.current!, { center: [23.5, -102], zoom: 5 });
+      const map = L.map(mapRef.current!, { center: [23.5, -102], zoom: 5, attributionControl: false });
+      L.control.attribution({ prefix: '<a href="https://leafletjs.com">Leaflet</a>' }).addTo(map);
 
       // Proveedores de tiles en orden de preferencia
             const tileProviders = [
