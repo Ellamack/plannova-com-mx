@@ -104,21 +104,20 @@ const sessionId = params.get("session_id");
       activeHandlerRef.current = null;
     }
 
-    // Quitar control anterior
-    if (drawControlRef.current) {
-      map.removeControl(drawControlRef.current);
-      drawControlRef.current = null;
-    }
+  if (modo === "archivo") return;
+if (modo === "navegar") {
+  if (activeHandlerRef.current) {
+    try { activeHandlerRef.current.disable(); } catch {}
+    activeHandlerRef.current = null;
+  }
+  return;
+}
 
-    if (modo === "archivo") return;
-            if (modo === "navegar") {
-      if (activeHandlerRef.current) {
-        try { activeHandlerRef.current.disable(); } catch {}
-        activeHandlerRef.current = null;
-      }
-      map.dragging.enable();
-      return;
-    }
+// Quitar control anterior
+if (drawControlRef.current) {
+  map.removeControl(drawControlRef.current);
+  drawControlRef.current = null;
+}
     // Crear nuevo control con solo la herramienta correcta
     const LDraw = L as any;
     const drawControl = new LDraw.Control.Draw({
