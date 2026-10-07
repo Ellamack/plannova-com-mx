@@ -12,6 +12,7 @@ export const Route = createFileRoute("/dem")({
     meta: [
       { title: "Recorte DEM — Planispherium Nova" },
       { name: "description", content: "Recorte DEM con curvas de nivel y derivados. Dibuja tu área en el mapa o sube tu archivo." },
+      { name: "keywords", content: "DEM, curvas de nivel, modelo digital de elevación, México" },
     ],
     links: [
       { rel: "canonical", href: "/dem" },
