@@ -84,8 +84,11 @@ const sessionId = params.get("session_id");
       });
       const data = await resp.json();
       setCoverage(data);
-      if (!data.cem_available) setPlan("5m");
-      else setPlan("15m");
+      if (!data.cem_available) {
+        setPlan("5m");
+      } else {
+        setPlan("15m");
+      }
     } catch {
       setCoverage(null);
     }
