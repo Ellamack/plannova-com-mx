@@ -47,6 +47,7 @@ interface GaleriaRow {
   imagen_url: string | null;
   orden: number;
   fecha_creacion: string;
+  etsy_url: string | null;
 }
 
 interface GaleriaItem extends GaleriaRow {
@@ -77,6 +78,8 @@ const labels = {
   successUpload: { es: "Imagen subida.", en: "Image uploaded." },
   errorUpload: { es: "No se pudo subir la imagen.", en: "Could not upload the image." },
   requireFile: { es: "Selecciona una imagen.", en: "Select an image." },
+  buyEtsy: { es: "Comprar en Etsy", en: "Buy on Etsy" },
+  etsyUrl: { es: "Etsy URL (opcional)", en: "Etsy URL (optional)" },
 } as const;
 
 /** Resolve a stored value into a displayable URL (external link or signed bucket URL). */
