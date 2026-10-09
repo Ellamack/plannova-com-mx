@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServiciosRouteImport } from './routes/servicios'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as PortafolioRouteImport } from './routes/portafolio'
 import { Route as OficioRouteImport } from './routes/oficio'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -28,6 +29,11 @@ import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[
 const ServiciosRoute = ServiciosRouteImport.update({
   id: '/servicios',
   path: '/servicios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortafolioRoute = PortafolioRouteImport.update({
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
+  '/privacidad': typeof PrivacidadRoute
   '/servicios': typeof ServiciosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -133,6 +140,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
+  '/privacidad': typeof PrivacidadRoute
   '/servicios': typeof ServiciosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
+  '/privacidad': typeof PrivacidadRoute
   '/servicios': typeof ServiciosRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -170,6 +179,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/oficio'
     | '/portafolio'
+    | '/privacidad'
     | '/servicios'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -187,6 +197,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/oficio'
     | '/portafolio'
+    | '/privacidad'
     | '/servicios'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -204,6 +215,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/oficio'
     | '/portafolio'
+    | '/privacidad'
     | '/servicios'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -222,6 +234,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   OficioRoute: typeof OficioRoute
   PortafolioRoute: typeof PortafolioRoute
+  PrivacidadRoute: typeof PrivacidadRoute
   ServiciosRoute: typeof ServiciosRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -235,6 +248,13 @@ declare module '@tanstack/react-router' {
       path: '/servicios'
       fullPath: '/servicios'
       preLoaderRoute: typeof ServiciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portafolio': {
@@ -350,6 +370,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   OficioRoute: OficioRoute,
   PortafolioRoute: PortafolioRoute,
+  PrivacidadRoute: PrivacidadRoute,
   ServiciosRoute: ServiciosRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
