@@ -72,6 +72,7 @@ interface GaleriaRow {
   imagen_url: string | null;
   orden: number;
   fecha_creacion: string;
+  etsy_url: string | null;
 }
 
 interface CapaRow {
@@ -125,6 +126,7 @@ const labels = {
   editLayer: { es: "Editar capa", en: "Edit layer" },
   imgTitle: { es: "Título", en: "Title" },
   description: { es: "Descripción", en: "Description" },
+  etsyUrl: { es: "Etsy URL (opcional)", en: "Etsy URL (optional)" },
   name: { es: "Nombre", en: "Name" },
   type: { es: "Tipo", en: "Type" },
   confirmDelete: { es: "¿Eliminar este elemento?", en: "Delete this item?" },
@@ -217,6 +219,7 @@ function AdminPage() {
   const [editG, setEditG] = useState<GaleriaRow | null>(null);
   const [gTitulo, setGTitulo] = useState("");
   const [gDescripcion, setGDescripcion] = useState("");
+  const [gEtsyUrl, setGEtsyUrl] = useState("");
 
   const [editC, setEditC] = useState<CapaRow | null>(null);
   const [cNombre, setCNombre] = useState("");
@@ -229,6 +232,7 @@ function AdminPage() {
     setEditG(row);
     setGTitulo(row.titulo);
     setGDescripcion(row.descripcion ?? "");
+    setGEtsyUrl(row.etsy_url ?? "");
   };
 
   const openEditC = (row: CapaRow) => {
@@ -244,7 +248,11 @@ function AdminPage() {
     setSavingEdit(true);
     const { error } = await supabase
       .from("galeria")
-      .update({ titulo: gTitulo.trim(), descripcion: gDescripcion.trim() || null })
+      .update({
+        titulo: gTitulo.trim(),
+        descripcion: gDescripcion.trim() || null,
+        etsy_url: gEtsyUrl.trim() || null,
+      })
       .eq("id", editG.id);
     setSavingEdit(false);
     if (error) {
@@ -544,6 +552,16 @@ function AdminPage() {
                 value={gDescripcion}
                 onChange={(e) => setGDescripcion(e.target.value)}
                 rows={4}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="e-g-etsy">{L("etsyUrl")}</Label>
+              <Input
+                id="e-g-etsy"
+                type="url"
+                value={gEtsyUrl}
+                onChange={(e) => setGEtsyUrl(e.target.value)}
+                placeholder="https://www.etsy.com/..."
               />
             </div>
             <DialogFooter>
