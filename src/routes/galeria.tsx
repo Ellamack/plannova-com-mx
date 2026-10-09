@@ -47,6 +47,7 @@ interface GaleriaRow {
   imagen_url: string | null;
   orden: number;
   fecha_creacion: string;
+  etsy_url: string | null;
 }
 
 interface GaleriaItem extends GaleriaRow {
@@ -77,6 +78,8 @@ const labels = {
   successUpload: { es: "Imagen subida.", en: "Image uploaded." },
   errorUpload: { es: "No se pudo subir la imagen.", en: "Could not upload the image." },
   requireFile: { es: "Selecciona una imagen.", en: "Select an image." },
+  buyEtsy: { es: "Comprar en Etsy", en: "Buy on Etsy" },
+  etsyUrl: { es: "Etsy URL (opcional)", en: "Etsy URL (optional)" },
 } as const;
 
 /** Resolve a stored value into a displayable URL (external link or signed bucket URL). */
@@ -102,6 +105,7 @@ function GalleryPage() {
   const [fTitulo, setFTitulo] = useState("");
   const [fDescripcion, setFDescripcion] = useState("");
   const [fFile, setFFile] = useState<File | null>(null);
+  const [fEtsy, setFEtsy] = useState("");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -166,6 +170,7 @@ function GalleryPage() {
         descripcion: fDescripcion.trim() || null,
         imagen_url: path,
         orden: nextOrden,
+        etsy_url: fEtsy.trim() || null,
       });
       if (insErr) throw insErr;
 
@@ -174,6 +179,7 @@ function GalleryPage() {
       setFTitulo("");
       setFDescripcion("");
       setFFile(null);
+      setFEtsy("");
       await load();
     } catch (err) {
       console.error("[galeria] upload failed:", err);
@@ -292,6 +298,18 @@ function GalleryPage() {
                   {selected.descripcion}
                 </p>
               )}
+              {selected.etsy_url && (
+                <div className="pt-1">
+                  <Button
+                    asChild
+                    className="rounded-full bg-accent px-6 font-medium text-accent-foreground hover:bg-accent/90"
+                  >
+                    <a href={selected.etsy_url} target="_blank" rel="noopener noreferrer">
+                      {L("buyEtsy")}
+                    </a>
+                  </Button>
+                </div>
+              )}
             </>
           )}
         </DialogContent>
@@ -334,6 +352,16 @@ function GalleryPage() {
                 accept="image/*"
                 onChange={(e) => setFFile(e.target.files?.[0] ?? null)}
                 required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="g-etsy">{L("etsyUrl")}</Label>
+              <Input
+                id="g-etsy"
+                type="url"
+                value={fEtsy}
+                onChange={(e) => setFEtsy(e.target.value)}
+                placeholder="https://www.etsy.com/..."
               />
             </div>
             <DialogFooter>

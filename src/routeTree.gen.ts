@@ -9,70 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ServiciosRouteImport } from './routes/servicios'
-import { Route as PortafolioRouteImport } from './routes/portafolio'
-import { Route as OficioRouteImport } from './routes/oficio'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as GaleriaRouteImport } from './routes/galeria'
-import { Route as DemRouteImport } from './routes/dem'
-import { Route as ContactoRouteImport } from './routes/contacto'
-import { Route as CapasRouteImport } from './routes/capas'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as CapasRouteImport } from './routes/capas'
+import { Route as ContactoRouteImport } from './routes/contacto'
+import { Route as DemRouteImport } from './routes/dem'
+import { Route as GaleriaRouteImport } from './routes/galeria'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as OficioRouteImport } from './routes/oficio'
+import { Route as PortafolioRouteImport } from './routes/portafolio'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
+import { Route as ServiciosRouteImport } from './routes/servicios'
+import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 
-const ServiciosRoute = ServiciosRouteImport.update({
-  id: '/servicios',
-  path: '/servicios',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortafolioRoute = PortafolioRouteImport.update({
-  id: '/portafolio',
-  path: '/portafolio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OficioRoute = OficioRouteImport.update({
-  id: '/oficio',
-  path: '/oficio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GaleriaRoute = GaleriaRouteImport.update({
-  id: '/galeria',
-  path: '/galeria',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemRoute = DemRouteImport.update({
-  id: '/dem',
-  path: '/dem',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactoRoute = ContactoRouteImport.update({
-  id: '/contacto',
-  path: '/contacto',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CapasRoute = CapasRouteImport.update({
-  id: '/capas',
-  path: '/capas',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -80,21 +37,76 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const CapasRoute = CapasRouteImport.update({
+  id: '/capas',
+  path: '/capas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemRoute = DemRouteImport.update({
+  id: '/dem',
+  path: '/dem',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GaleriaRoute = GaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OficioRoute = OficioRouteImport.update({
+  id: '/oficio',
+  path: '/oficio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortafolioRoute = PortafolioRouteImport.update({
+  id: '/portafolio',
+  path: '/portafolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServiciosRoute = ServiciosRouteImport.update({
+  id: '/servicios',
+  path: '/servicios',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const Char91DotmcpChar93ListToolsRoute =
   Char91DotmcpChar93ListToolsRouteImport.update({
     id: '/.mcp/list-tools',
     path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
@@ -116,7 +128,9 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
+  '/privacidad': typeof PrivacidadRoute
   '/servicios': typeof ServiciosRoute
+  '/sobre': typeof SobreRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -133,7 +147,9 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
+  '/privacidad': typeof PrivacidadRoute
   '/servicios': typeof ServiciosRoute
+  '/sobre': typeof SobreRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -151,7 +167,9 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/oficio': typeof OficioRoute
   '/portafolio': typeof PortafolioRoute
+  '/privacidad': typeof PrivacidadRoute
   '/servicios': typeof ServiciosRoute
+  '/sobre': typeof SobreRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -170,7 +188,9 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/oficio'
     | '/portafolio'
+    | '/privacidad'
     | '/servicios'
+    | '/sobre'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/.mcp/invoke-tool/$tool'
@@ -187,7 +207,9 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/oficio'
     | '/portafolio'
+    | '/privacidad'
     | '/servicios'
+    | '/sobre'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/.mcp/invoke-tool/$tool'
@@ -204,7 +226,9 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/oficio'
     | '/portafolio'
+    | '/privacidad'
     | '/servicios'
+    | '/sobre'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/.mcp/invoke-tool/$tool'
@@ -222,7 +246,9 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   OficioRoute: typeof OficioRoute
   PortafolioRoute: typeof PortafolioRoute
+  PrivacidadRoute: typeof PrivacidadRoute
   ServiciosRoute: typeof ServiciosRoute
+  SobreRoute: typeof SobreRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -230,74 +256,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/servicios': {
-      id: '/servicios'
-      path: '/servicios'
-      fullPath: '/servicios'
-      preLoaderRoute: typeof ServiciosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portafolio': {
-      id: '/portafolio'
-      path: '/portafolio'
-      fullPath: '/portafolio'
-      preLoaderRoute: typeof PortafolioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/oficio': {
-      id: '/oficio'
-      path: '/oficio'
-      fullPath: '/oficio'
-      preLoaderRoute: typeof OficioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/galeria': {
-      id: '/galeria'
-      path: '/galeria'
-      fullPath: '/galeria'
-      preLoaderRoute: typeof GaleriaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dem': {
-      id: '/dem'
-      path: '/dem'
-      fullPath: '/dem'
-      preLoaderRoute: typeof DemRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contacto': {
-      id: '/contacto'
-      path: '/contacto'
-      fullPath: '/contacto'
-      preLoaderRoute: typeof ContactoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/capas': {
-      id: '/capas'
-      path: '/capas'
-      fullPath: '/capas'
-      preLoaderRoute: typeof CapasRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -307,18 +270,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/capas': {
+      id: '/capas'
+      path: '/capas'
+      fullPath: '/capas'
+      preLoaderRoute: typeof CapasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dem': {
+      id: '/dem'
+      path: '/dem'
+      fullPath: '/dem'
+      preLoaderRoute: typeof DemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galeria': {
+      id: '/galeria'
+      path: '/galeria'
+      fullPath: '/galeria'
+      preLoaderRoute: typeof GaleriaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oficio': {
+      id: '/oficio'
+      path: '/oficio'
+      fullPath: '/oficio'
+      preLoaderRoute: typeof OficioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portafolio': {
+      id: '/portafolio'
+      path: '/portafolio'
+      fullPath: '/portafolio'
+      preLoaderRoute: typeof PortafolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicios': {
+      id: '/servicios'
+      path: '/servicios'
+      fullPath: '/servicios'
+      preLoaderRoute: typeof ServiciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/list-tools': {
@@ -326,6 +359,13 @@ declare module '@tanstack/react-router' {
       path: '/.mcp/list-tools'
       fullPath: '/.mcp/list-tools'
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/invoke-tool/$tool': {
@@ -350,7 +390,9 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   OficioRoute: OficioRoute,
   PortafolioRoute: PortafolioRoute,
+  PrivacidadRoute: PrivacidadRoute,
   ServiciosRoute: ServiciosRoute,
+  SobreRoute: SobreRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
