@@ -64,8 +64,10 @@ function DemPage() {
   const [mapaListo, setMapaListo] = useState(false);
 
   const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
-const pagoStatus = params.get("pago");
-const sessionId = params.get("session_id");
+  const pagoStatus = params.get("pago");
+  const sessionId = params.get("session_id");
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const drawnItemsRef = useRef<any>(null);
@@ -91,34 +93,30 @@ const sessionId = params.get("session_id");
     setEstado("idle");
   }, []);
 
-  // Activar herramienta de dibujo programáticamente
   const activarHerramienta = useCallback((modo: ModoEntrada) => {
     const map = mapInstanceRef.current;
     const L = LRef.current;
     const drawnItems = drawnItemsRef.current;
     if (!map || !L || !drawnItems) return;
 
-    // Cancelar handler activo si existe
     if (activeHandlerRef.current) {
       try { activeHandlerRef.current.disable(); } catch {}
       activeHandlerRef.current = null;
     }
 
-  if (modo === "archivo") return;
-if (modo === "navegar") {
-  if (activeHandlerRef.current) {
-    try { activeHandlerRef.current.disable(); } catch {}
-    activeHandlerRef.current = null;
-  }
-  return;
-}
+    if (modo === "navegar" || modo === "archivo") {
+      if (drawControlRef.current) {
+        map.removeControl(drawControlRef.current);
+        drawControlRef.current = null;
+      }
+      return;
+    }
 
-// Quitar control anterior
-if (drawControlRef.current) {
-  map.removeControl(drawControlRef.current);
-  drawControlRef.current = null;
-}
-    // Crear nuevo control con solo la herramienta correcta
+    if (drawControlRef.current) {
+      map.removeControl(drawControlRef.current);
+      drawControlRef.current = null;
+    }
+
     const LDraw = L as any;
     const drawControl = new LDraw.Control.Draw({
       edit: false,
@@ -131,7 +129,6 @@ if (drawControlRef.current) {
     map.addControl(drawControl);
     drawControlRef.current = drawControl;
 
-    // Activar la herramienta automáticamente
     setTimeout(() => {
       const LDraw2 = L as any;
       let handler: any;
@@ -147,7 +144,6 @@ if (drawControlRef.current) {
     }, 100);
   }, []);
 
-  // Inicializar mapa UNA SOLA VEZ
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
@@ -166,8 +162,7 @@ if (drawControlRef.current) {
       const map = L.map(mapRef.current!, { center: [23.5, -102], zoom: 5, attributionControl: false });
       L.control.attribution({ prefix: '<a href="https://leafletjs.com">Leaflet</a>' }).addTo(map);
 
-      // Proveedores de tiles en orden de preferencia
-            const tileProviders = [
+      const tileProviders = [
         {
           url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
           attribution: '© <a href="https://www.esri.com">Esri</a>',
@@ -182,16 +177,11 @@ if (drawControlRef.current) {
         },
       ];
 
-      let tileLayerActual: any = null;
       let providerIndex = 0;
-
       const cargarTiles = (index: number) => {
         if (index >= tileProviders.length) return;
         const provider = tileProviders[index];
-        const layer = L.tileLayer(provider.url, {
-          attribution: provider.attribution,
-          maxZoom: 18,
-        });
+        const layer = L.tileLayer(provider.url, { attribution: provider.attribution, maxZoom: 18 });
         layer.on("tileerror", () => {
           if (providerIndex === index) {
             providerIndex = index + 1;
@@ -200,9 +190,7 @@ if (drawControlRef.current) {
           }
         });
         layer.addTo(map);
-        tileLayerActual = layer;
       };
-
       cargarTiles(0);
 
       const drawnItems = new L.FeatureGroup();
@@ -218,7 +206,6 @@ if (drawControlRef.current) {
         setGeojson(gj);
         setCoverage(null);
         checkCoverage(gj);
-        // Re-activar herramienta para permitir redibujar
         setModoEntrada(prev => { activarHerramienta(prev); return prev; });
       });
 
@@ -240,21 +227,12 @@ if (drawControlRef.current) {
     };
   }, [checkCoverage, activarHerramienta]);
 
-  // Cuando cambia el modo Y el mapa ya está listo: actualizar herramienta sin recrear mapa
   useEffect(() => {
     if (!mapaListo) return;
-    if (modoEntrada === "archivo") {
-      if (drawControlRef.current && mapInstanceRef.current) {
-        mapInstanceRef.current.removeControl(drawControlRef.current);
-        drawControlRef.current = null;
-      }
-      if (activeHandlerRef.current) {
-        try { activeHandlerRef.current.disable(); } catch {}
-        activeHandlerRef.current = null;
-      }
-      return;
-    }
     activarHerramienta(modoEntrada);
+    setTimeout(() => {
+      mapInstanceRef.current?.invalidateSize();
+    }, 50);
   }, [modoEntrada, mapaListo, activarHerramienta]);
 
   const limpiarMapa = () => {
@@ -270,11 +248,6 @@ if (drawControlRef.current) {
       setEstado("error");
       return;
     }
-    if (plan === "5m") {
-  setMensajeError(locale === "es" ? "El servicio premium estará disponible próximamente." : "Premium service coming soon.");
-  setEstado("error");
-  return;
- }
     setEstado("procesando");
     setMensajeError("");
 
@@ -310,7 +283,7 @@ if (drawControlRef.current) {
 
   return (
     <section className="mx-auto max-w-5xl px-4 py-12 sm:py-16">
-            {pagoStatus === "exitoso" && sessionId && (
+      {pagoStatus === "exitoso" && sessionId && (
         <div className="mb-6 rounded-xl border border-green-500/30 bg-green-500/10 p-6 text-center">
           <CheckCircle className="mx-auto h-8 w-8 text-green-500 mb-3" />
           <p className="text-lg font-semibold text-foreground mb-2">
@@ -335,6 +308,7 @@ if (drawControlRef.current) {
           </p>
         </div>
       )}
+
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground mb-4">
           <Globe className="h-3.5 w-3.5 text-accent" />
@@ -357,13 +331,14 @@ if (drawControlRef.current) {
               {locale === "es" ? "Herramienta de dibujo" : "Drawing tool"}
             </p>
             <div className="space-y-2">
-              {[
-                { id: "mapa-poligono", icon: PenLine, label: locale === "es" ? "Dibujar polígono" : "Draw polygon" },
-                { id: "mapa-rectangulo", icon: Square, label: locale === "es" ? "Trazar rectángulo" : "Draw rectangle" },
-                { id: "archivo", icon: Upload, label: locale === "es" ? "Subir archivo" : "Upload file" },
-              ].map(({ id, icon: Icon, label }) => (
+              {([
+                { id: "navegar" as ModoEntrada, icon: Hand, label: locale === "es" ? "Navegar" : "Navigate" },
+                { id: "mapa-poligono" as ModoEntrada, icon: PenLine, label: locale === "es" ? "Dibujar polígono" : "Draw polygon" },
+                { id: "mapa-rectangulo" as ModoEntrada, icon: Square, label: locale === "es" ? "Trazar rectángulo" : "Draw rectangle" },
+                { id: "archivo" as ModoEntrada, icon: Upload, label: locale === "es" ? "Subir archivo" : "Upload file" },
+              ]).map(({ id, icon: Icon, label }) => (
                 <button key={id}
-                  onClick={() => { setModoEntrada(id as ModoEntrada); setGeojson(null); setArchivo(null); setCoverage(null); }}
+                  onClick={() => { setModoEntrada(id); setGeojson(null); setArchivo(null); setCoverage(null); if (id === "archivo") setTimeout(() => fileInputRef.current?.click(), 50); }}
                   className={`w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${modoEntrada === id ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground hover:bg-accent/10"}`}>
                   <Icon className="h-4 w-4 flex-shrink-0" />
                   {label}
@@ -380,9 +355,17 @@ if (drawControlRef.current) {
                   {archivo ? archivo.name : locale === "es" ? "Seleccionar archivo" : "Select file"}
                 </span>
                 <span className="text-xs text-muted-foreground">SHP·ZIP, KML, KMZ, GeoJSON</span>
-                <input type="file" accept=".zip,.kml,.kmz,.geojson" className="hidden"
-                  onChange={(e) => setArchivo(e.target.files?.[0] ?? null)} />
+                <input ref={fileInputRef} type="file" accept=".zip,.kml,.kmz,.geojson" className="hidden"
+                  onChange={(e) => { setArchivo(e.target.files?.[0] ?? null); }} />
               </label>
+              {archivo && (
+                <button onClick={handleSubmit} disabled={estado === "procesando"}
+                  className="mt-3 w-full rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground disabled:opacity-50">
+                  {estado === "procesando"
+                    ? (locale === "es" ? "Procesando..." : "Processing...")
+                    : (locale === "es" ? "Procesar archivo" : "Process file")}
+                </button>
+              )}
             </div>
           )}
 
@@ -400,7 +383,10 @@ if (drawControlRef.current) {
               <p className="text-sm font-medium text-foreground mb-3">
                 {locale === "es" ? "Planes disponibles" : "Available plans"}
               </p>
-              <button onClick={handleSubmit} disabled={!coverage.cem_available || !geojson || estado === "procesando"}
+
+              <button
+                onClick={handleSubmit}
+                disabled={!coverage.cem_available || !geojson || estado === "procesando"}
                 className={`w-full rounded-lg border p-3 text-left transition-colors mb-2 ${!coverage.cem_available ? "border-border opacity-40 cursor-not-allowed" : "border-accent bg-accent/10 hover:bg-accent/20 cursor-pointer"}`}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
@@ -415,24 +401,25 @@ if (drawControlRef.current) {
                 )}
               </button>
 
-              <button onClick={async () => {
-  if (!geojson) return;
-  setEstado("procesando");
-  try {
-    const resp = await fetch("https://plannova.com.mx/api/dem/crear-pago", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(geojson),
-    });
-    const data = await resp.json();
-    if (data.url) window.location.href = data.url;
-  } catch {
-    setMensajeError("Error al crear sesión de pago.");
-    setEstado("error");
-  }
-}}
-disabled={!geojson}
-className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson ? "border-border opacity-40 cursor-not-allowed" : "border-yellow-500/50 hover:border-yellow-500 cursor-pointer"}`}>
+              <button
+                onClick={async () => {
+                  if (!geojson) return;
+                  setEstado("procesando");
+                  try {
+                    const resp = await fetch("https://plannova.com.mx/api/dem/crear-pago", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify(geojson),
+                    });
+                    const data = await resp.json();
+                    if (data.url) window.location.href = data.url;
+                  } catch {
+                    setMensajeError("Error al crear sesión de pago.");
+                    setEstado("error");
+                  }
+                }}
+                disabled={!geojson}
+                className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson ? "border-border opacity-40 cursor-not-allowed" : "border-yellow-500/50 hover:border-yellow-500 cursor-pointer"}`}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                     <Star className="h-3.5 w-3.5 text-yellow-500" />
@@ -441,7 +428,7 @@ className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson 
                   <span className="text-xs font-semibold text-yellow-500">Premium</span>
                 </div>
                 <p className="text-xs text-muted-foreground">WorldDEM Neo — {locale === "es" ? "Cobertura global" : "Global coverage"}</p>
-                </button>
+              </button>
             </div>
           )}
 
@@ -496,8 +483,6 @@ className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson 
             </div>
           </div>
 
-          
-
           {estado === "listo" && (
             <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-center">
               <CheckCircle className="mx-auto h-6 w-6 text-green-500 mb-2" />
@@ -529,17 +514,15 @@ className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson 
         </div>
 
         <div className="lg:col-span-2">
-          <div className={modoEntrada === "archivo" ? "hidden" : ""}>
+          <div>
             <div className="rounded-xl border border-border overflow-hidden relative">
-                            {(geojson || true ) && (
-                <button onClick={limpiarMapa}
-                  className="absolute top-3 right-3 z-[1000] flex items-center gap-1 rounded-lg bg-background/90 backdrop-blur px-2 py-1 text-xs text-muted-foreground hover:text-foreground border border-border">
-                  <Trash2 className="h-3 w-3" />
-                  {locale === "es" ? "Limpiar" : "Clear"}
-                </button>
-              )}
+              <button onClick={limpiarMapa}
+                className="absolute top-3 right-3 z-[1000] flex items-center gap-1 rounded-lg bg-background/90 backdrop-blur px-2 py-1 text-xs text-muted-foreground hover:text-foreground border border-border">
+                <Trash2 className="h-3 w-3" />
+                {locale === "es" ? "Limpiar" : "Clear"}
+              </button>
               <div ref={mapRef} className="h-[500px] w-full" />
-              {!geojson && (
+              {!geojson && (modoEntrada === "mapa-poligono" || modoEntrada === "mapa-rectangulo") && (
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] rounded-lg bg-background/90 backdrop-blur px-3 py-2 text-xs text-muted-foreground border border-border pointer-events-none">
                   {modoEntrada === "mapa-poligono"
                     ? (locale === "es" ? "Haz clic en el mapa para dibujar tu polígono" : "Click on the map to draw your polygon")
@@ -555,17 +538,6 @@ className={`w-full rounded-lg border p-3 text-left transition-colors ${!geojson 
               </p>
             )}
           </div>
-
-          {modoEntrada === "archivo" && (
-            <div className="rounded-xl border border-border bg-card/50 h-96 flex items-center justify-center">
-              <div className="text-center space-y-3">
-                <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
-                <p className="text-muted-foreground text-sm">
-                  {locale === "es" ? "Sube tu archivo en el panel izquierdo" : "Upload your file on the left panel"}
-                </p>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </section>
